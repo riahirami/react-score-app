@@ -12,7 +12,7 @@ import Divider from '@mui/material/Divider';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import { StyledImage } from 'pages/GameSettings/Components/GameStartSection/gameStartSection.styles';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { setGameOver } from 'redux/features/gameSlice/gameSlice';
 import { useAppDispatch } from 'redux/hooks';
@@ -34,6 +34,7 @@ import {
   StyledTextFieldContainer,
   StyledCustomButton,
   StyledThemeSwitchContainer,
+  StyledGameContainer,
 } from './GameScreen.style';
 import useGameActions from 'hooks/useGameActions';
 import DarkLightModeSwitch from 'components/DarkLightModeSwitch/DarkLightModeSwitch';
@@ -248,11 +249,11 @@ const GameScreen = () => {
 
   const renderResults = () => {
     return (
-      <>
+      <div style={{ width: '100%' }}>
         <Typography variant="h5" color={colors.darkBlue}>
           Score :{' '}
         </Typography>
-        <StyledRoundsScoreContainer>
+        <Grid>
           <StyledGameResultsContainer>
             {game.players.map((player, index) => (
               <>
@@ -272,8 +273,8 @@ const GameScreen = () => {
               </>
             ))}
           </StyledGameResultsContainer>
-        </StyledRoundsScoreContainer>
-      </>
+        </Grid>
+      </div>
     );
   };
 
@@ -352,14 +353,16 @@ const GameScreen = () => {
         <DarkLightModeSwitch onChangeAction={handleThemeModeChange} />
       </StyledThemeSwitchContainer>
       <GameDetails />
-      <GameActions />
-      <Divider />
-      <PlayerNames />
+      <StyledGameContainer>
+        <GameActions />
+        <Divider />
+        <PlayerNames />
 
-      <RoundsScore />
-      {isAlertOpen && renderAlertDialog()}
-      <Divider />
-      <GameResults />
+        <RoundsScore />
+        {isAlertOpen && renderAlertDialog()}
+        <Divider />
+        <GameResults />
+      </StyledGameContainer>
     </StyledGameScreenContainer>
   );
 };

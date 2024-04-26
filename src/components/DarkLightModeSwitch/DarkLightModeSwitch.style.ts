@@ -19,7 +19,7 @@ export const StyledDarkLightModeSwitch = styled(Switch)(({ theme }) => ({
       },
       '& + .MuiSwitch-track': {
         opacity: 1,
-        backgroundColor: theme.palette.mode === ThemeEnum.DARK ? '#e9ebec' : '#cee1f3',
+        backgroundColor: theme.palette.mode === ThemeEnum.LIGHT ? '#e9ebec' : '#cee1f3',
       },
     },
   },

@@ -1,17 +1,18 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { TextField, Typography, styled } from '@mui/material';
 import { colors } from 'utils/colors';
+import { GAME_SCREEN_MIN_WIDTH } from 'utils/constants';
 import { ThemeEnum } from 'utils/enum';
 
 export const StyledGameScreenContainer = styled('div')(({ theme }) => ({
-  display: 'grid',
+  // display: 'grid',
   justifyContent: 'center',
   backgroundColor:
     theme.palette.mode === ThemeEnum.LIGHT
       ? theme.palette.background.default
       : theme.palette.grey[400],
   minHeight: '100vh',
-  minWidth: '100vw',
+  minWidth: GAME_SCREEN_MIN_WIDTH,
   marginRight: 'auto',
   marginLeft: 'auto',
 }));
@@ -21,7 +22,6 @@ export const StyledGameResultsContainer = styled('div')(({ theme }) => ({
   justifyContent: 'center',
   alignItems: 'center',
   gap: 16,
-  // marginRight: 50,
 }));
 
 export const StyledPlayerNameContainer = styled(Typography)(() => ({
@@ -100,6 +100,8 @@ export const StyledGameDetailsContainer = styled('div')(({ theme }) => ({
   marginLeft: 'auto',
   color:
     theme.palette.mode === ThemeEnum.DARK ? theme.palette.grey[400] : theme.palette.common.white,
+  minWidth: GAME_SCREEN_MIN_WIDTH,
+  width: '70%',
 }));
 export const StyledGameActionsContainer = styled('div')(() => ({
   display: 'grid',
@@ -147,4 +149,8 @@ export const StyledThemeSwitchContainer = styled('div')(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-end',
+}));
+
+export const StyledGameContainer = styled('div')(({ theme }) => ({
+  minWidth: GAME_SCREEN_MIN_WIDTH,
 }));

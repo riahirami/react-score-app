@@ -59,7 +59,7 @@ const CustomModal = ({
         <Button
           onClick={handleConfirm}
           variant="contained"
-          color="primary"
+          color="info"
           disabled={isConfirmButtonDisabled}
           sx={{ textTransform: 'capitalize' }}
         >

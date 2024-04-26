@@ -9,6 +9,7 @@ import { openModal } from 'redux/features/modalSlice/modalSlice';
 import { useEffect } from 'react';
 import { persistData } from 'utils/helpers/storage.helpers';
 import { ThemeEnum } from 'utils/enum';
+import { StyledContainer } from './GameSettings.styles';
 
 const GameSettings = () => {
   const { reset } = useForm<GameAttributes>();
@@ -27,10 +28,10 @@ const GameSettings = () => {
   }, []);
 
   return (
-    <Grid>
+    <StyledContainer>
       {!isGameStarted ? <GameStartSection handleOpen={handleOpen} /> : <GameScreen />}
       {isModalOpen && !isGameStarted && <GameSettingsModal />}
-    </Grid>
+    </StyledContainer>
   );
 };
 

@@ -31,9 +31,6 @@ import { GameAttributes } from 'types/models/Game/Games';
 import { useAppDispatch } from 'redux/hooks';
 import CustomModal from 'components/CustomModal/CustomModal';
 import { GamePlayerNumberEnum, GameTypeEnum } from 'utils/enum';
-import { colors } from 'utils/colors';
-import { red } from '@mui/material/colors';
-import useGameActions from 'hooks/useGameActions';
 
 const GameSettingsModal = () => {
   const [playersNumberValue, setPlayersNumberValue] = useState(2);
