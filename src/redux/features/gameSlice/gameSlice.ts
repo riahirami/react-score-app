@@ -50,7 +50,6 @@ export const gameSlice = createSlice({
         name: playerName,
         score: 0,
       }));
-      // .filter((player) => player.name);
     },
     toggleGameTeamMode: (state, action: PayloadAction<boolean>) => {
       state.team = action.payload;

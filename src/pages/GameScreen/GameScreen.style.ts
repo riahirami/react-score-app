@@ -101,7 +101,7 @@ export const StyledGameDetailsContainer = styled('div')(({ theme }) => ({
   color:
     theme.palette.mode === ThemeEnum.DARK ? theme.palette.grey[400] : theme.palette.common.white,
   minWidth: GAME_SCREEN_MIN_WIDTH,
-  width: '70%',
+  width: '60%',
 }));
 export const StyledGameActionsContainer = styled('div')(() => ({
   display: 'grid',

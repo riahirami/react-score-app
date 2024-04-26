@@ -12,10 +12,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   setFinalScore,
+  setGameOver,
   setGameStarted,
   setGameType,
   setPlayers,
@@ -38,8 +39,10 @@ const GameSettingsModal = () => {
 
   const {
     register,
+    unregister,
     handleSubmit,
     formState: { isValid, errors },
+    trigger,
   } = useForm<GameAttributes>({
     mode: 'onChange',
     defaultValues: {
@@ -85,6 +88,7 @@ const GameSettingsModal = () => {
     }
     return playersNameInput;
   };
+
   const dispatch = useAppDispatch();
 
   const createGameAction = (data: GameAttributes) => {
@@ -108,7 +112,12 @@ const GameSettingsModal = () => {
   };
 
   const handleTeamModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    trigger('team');
     setIsTeamModeActivated(event.target.checked);
+    if (event.target.checked) {
+      unregister('playersName.2');
+      unregister('playersName.3');
+    }
   };
 
   return (

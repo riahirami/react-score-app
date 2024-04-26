@@ -65,6 +65,7 @@ const GameScreen = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { isValid, errors },
   } = useForm({
     mode: 'onChange',
@@ -140,6 +141,7 @@ const GameScreen = () => {
                 })}
                 defaultValue={0}
                 size="small"
+                onFocus={() => setValue(`${player.name}round${1}`, '')}
                 disabled={game.rounds.length >= 1}
               />
               {errors && errors[`${player.name}round${1}`]?.message && (
@@ -177,6 +179,7 @@ const GameScreen = () => {
                   placeholder="0"
                   defaultValue={0}
                   size="small"
+                  onFocus={() => setValue(`${player.name}round${index + 2}`, '')}
                   disabled={
                     index !== game.rounds.length - 1 ||
                     checkIfPlayerWin(player) ||
@@ -249,8 +252,8 @@ const GameScreen = () => {
 
   const renderResults = () => {
     return (
-      <div style={{ width: '100%' }}>
-        <Typography variant="h5" color={colors.darkBlue}>
+      <Grid>
+        <Typography variant="h6" color={colors.darkBlue} marginLeft={2}>
           Score :{' '}
         </Typography>
         <Grid>
@@ -274,7 +277,7 @@ const GameScreen = () => {
             ))}
           </StyledGameResultsContainer>
         </Grid>
-      </div>
+      </Grid>
     );
   };
 

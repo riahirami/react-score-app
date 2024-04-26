@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { persistData } from 'utils/helpers/storage.helpers';
 import { ThemeEnum } from 'utils/enum';
 import { StyledContainer } from './GameSettings.styles';
+import { setGameOver } from 'redux/features/gameSlice/gameSlice';
 
 const GameSettings = () => {
   const { reset } = useForm<GameAttributes>();
