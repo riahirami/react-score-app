@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { GameTypeEnum } from '../../../utils/enum';
 
 interface Player {
+  playerIndex: number;
   name: string;
   score: number;
 }
@@ -47,6 +48,7 @@ export const gameSlice = createSlice({
     },
     setPlayers: (state, action: PayloadAction<string[]>) => {
       state.players = action.payload.map((playerName) => ({
+        playerIndex: action.payload.indexOf(playerName) + 1,
         name: playerName,
         score: 0,
       }));

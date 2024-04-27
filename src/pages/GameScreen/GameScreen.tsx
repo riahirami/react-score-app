@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-/* eslint-disable react/jsx-key */
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { Button, Grid, Typography } from '@mui/material';
@@ -38,7 +37,7 @@ import {
 import useGameActions from 'hooks/useGameActions';
 import DarkLightModeSwitch from 'components/DarkLightModeSwitch/DarkLightModeSwitch';
 import useThemeModeSwitch from 'hooks/useThemeModeSwitch';
-
+import { setGameOver } from 'redux/features/gameSlice/gameSlice';
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -73,6 +72,10 @@ const GameScreen = () => {
   });
 
   const endGameAction = () => {
+    dispatch(setGameOver());
+  };
+
+  const replayGameAction = () => {
     resetRoundsAndPlayersScore();
   };
 
@@ -131,7 +134,7 @@ const GameScreen = () => {
         <StyledRoundsScoreContainer>
           <h3>1</h3>
           {game.players.map((player, index) => (
-            <StyledTextFieldContainer>
+            <StyledTextFieldContainer key={`player${index}`}>
               <StyledTextField
                 placeholder="0"
                 id={`player${index}`}
@@ -164,13 +167,12 @@ const GameScreen = () => {
               }}
             />
           </StyledCustomButton>
-          <Button onClick={() => removeRoundScoreRow(1)}>Remove</Button>
         </StyledRoundsScoreContainer>
         {game.rounds.map((round, index) => (
-          <StyledRoundsScoreContainer>
+          <StyledRoundsScoreContainer key={`field${index}`}>
             <h3>{round.roundNumber + 1}</h3>
             {game.players.map((player, key) => (
-              <StyledTextFieldContainer>
+              <StyledTextFieldContainer key={key}>
                 <StyledTextField
                   id={`field${index}`}
                   key={index}
@@ -240,6 +242,7 @@ const GameScreen = () => {
           players: prevState.players.map((player) => {
             return {
               name: player.name,
+              playerIndex: player.playerIndex,
               score: player.score + parseInt(data[`${player.name}round${rounds.length}`]),
             };
           }),
@@ -286,17 +289,6 @@ const GameScreen = () => {
   const resetRoundsAndPlayersScore = () => {
     resetForm();
     resetGame();
-  };
-
-  const removeRoundScoreRow = (roundNumber: number) => {
-    const rounds = game.rounds.filter((round) => round.roundNumber !== roundNumber);
-
-    setGame((prevState) => {
-      return {
-        ...prevState,
-        rounds: rounds,
-      };
-    });
   };
 
   const GameDetails = () => (
@@ -353,7 +345,7 @@ const GameScreen = () => {
                   </Typography>
                 ),
             )}
-            <Button onClick={endGameAction} variant="contained">
+            <Button onClick={replayGameAction} variant="contained">
               <ReplayIcon />
             </Button>
           </Grid>

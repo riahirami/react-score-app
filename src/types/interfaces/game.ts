@@ -1,4 +1,5 @@
 export interface Player {
+  playerIndex: number;
   name: string;
   score: number;
 }
