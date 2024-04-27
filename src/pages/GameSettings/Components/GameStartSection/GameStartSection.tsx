@@ -1,6 +1,6 @@
-import { Box, Button, Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import { images } from '../../../../utils/images';
-import { ImageContainer, StyledContainer, StyledImage } from './gameStartSection.styles';
+import { StyledContainer, StyledImage } from './gameStartSection.styles';
 
 interface GameGameStartSectionProps {
   handleOpen: () => void;
@@ -8,10 +8,10 @@ interface GameGameStartSectionProps {
 
 const GameStartSection = ({ handleOpen }: GameGameStartSectionProps) => (
   <StyledContainer>
-    <ImageContainer>
+    <Grid>
       <StyledImage src={images.SEVEN} width={250} height={323} />
       <StyledImage src={images.JOKER} width={250} height={330} />
-    </ImageContainer>
+    </Grid>
     <Button onClick={handleOpen} variant="contained" sx={{ textTransform: 'capitalize' }}>
       Nouvelle partie
     </Button>

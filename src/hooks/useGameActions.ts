@@ -15,6 +15,7 @@ interface useGameActionsProps {
   ifPlayerOnLostPlayers: (player: Player) => boolean;
   ifPlayerOnWinnersPlayers: (player: Player) => boolean;
   isGameOverRef: React.MutableRefObject<boolean | undefined>;
+  resetGame: () => void;
 }
 
 const useGameActions = (): useGameActionsProps => {
@@ -103,7 +104,6 @@ const useGameActions = (): useGameActionsProps => {
   const checkIfGameIsOver = (): boolean => {
     if (winnerPlayers && game.gameType === GameTypeEnum.CHKOBBA) {
       isGameOverRef.current = winnerPlayers.length >= numberOfPlayerToWin();
-      console.log('chkobba ', isGameOverRef.current);
       return winnerPlayers.length >= numberOfPlayerToWin();
     } else {
       if (
@@ -120,6 +120,22 @@ const useGameActions = (): useGameActionsProps => {
     return false;
   };
 
+  const resetGame = (): void => {
+    setGame({
+      gameType: game.gameType,
+      playersNumber: game.playersNumber,
+      finalScore: game.finalScore,
+      players: game.players.map((player) => ({
+        ...player,
+        score: 0,
+        rounds: [],
+      })),
+      rounds: [],
+      team: game.team,
+    });
+    setWinnerPlayers([]);
+    setLostPlayers([]);
+  };
   return {
     getWinnersPlayers,
     checkIfPlayerWin,
@@ -132,6 +148,7 @@ const useGameActions = (): useGameActionsProps => {
     ifPlayerOnLostPlayers,
     ifPlayerOnWinnersPlayers,
     isGameOverRef,
+    resetGame,
   };
 };
 

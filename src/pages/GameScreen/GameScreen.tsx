@@ -14,7 +14,6 @@ import { TransitionProps } from '@mui/material/transitions';
 import { StyledImage } from 'pages/GameSettings/Components/GameStartSection/gameStartSection.styles';
 import React from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
-import { setGameOver } from 'redux/features/gameSlice/gameSlice';
 import { useAppDispatch } from 'redux/hooks';
 import { colors } from 'utils/colors';
 import { images } from 'utils/images';
@@ -61,18 +60,20 @@ const GameScreen = () => {
     ifPlayerOnLostPlayers,
     ifPlayerOnWinnersPlayers,
     isGameOverRef,
+    resetGame,
   } = useGameActions();
   const {
     register,
     handleSubmit,
     setValue,
+    reset: resetForm,
     formState: { isValid, errors },
   } = useForm({
     mode: 'onChange',
   });
 
   const endGameAction = () => {
-    dispatch(setGameOver());
+    resetRoundsAndPlayersScore();
   };
 
   const { handleAlertClose, handleAlertOpen, isAlertOpen } = useModalAlert();
@@ -163,6 +164,7 @@ const GameScreen = () => {
               }}
             />
           </StyledCustomButton>
+          <Button onClick={() => removeRoundScoreRow(1)}>Remove</Button>
         </StyledRoundsScoreContainer>
         {game.rounds.map((round, index) => (
           <StyledRoundsScoreContainer>
@@ -279,6 +281,22 @@ const GameScreen = () => {
         </Grid>
       </Grid>
     );
+  };
+
+  const resetRoundsAndPlayersScore = () => {
+    resetForm();
+    resetGame();
+  };
+
+  const removeRoundScoreRow = (roundNumber: number) => {
+    const rounds = game.rounds.filter((round) => round.roundNumber !== roundNumber);
+
+    setGame((prevState) => {
+      return {
+        ...prevState,
+        rounds: rounds,
+      };
+    });
   };
 
   const GameDetails = () => (

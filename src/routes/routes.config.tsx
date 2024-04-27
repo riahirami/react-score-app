@@ -1,7 +1,7 @@
 import { RouteIdEnum } from 'config/enums';
-import RouteObject from 'types/interfaces/RouteObject';
-import NotFoundPage from 'pages/NotFoundPage';
 import GameSettings from 'pages/GameSettings/Screen/GameSettings';
+import NotFoundPage from 'pages/NotFoundPage';
+import RouteObject from 'types/interfaces/RouteObject';
 
 const RoutesConfig: RouteObject[] = [
   {

@@ -1,11 +1,5 @@
 import { styled } from '@mui/material/styles';
 
-export const ImageContainer = styled('div')(({ theme }) => ({
-  // position: 'absolute',
-  // bottom: 0,
-  // right: 0,
-}));
-
 export const StyledContainer = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
