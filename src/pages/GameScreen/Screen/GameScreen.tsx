@@ -1,6 +1,5 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import ReplayIcon from '@mui/icons-material/Replay';
 import { Button, Grid, Typography } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -10,34 +9,27 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
-import { StyledImage } from 'pages/GameSettings/Components/GameStartSection/gameStartSection.styles';
+import DarkLightModeSwitch from 'components/DarkLightModeSwitch/DarkLightModeSwitch';
+import useGameActions from 'hooks/useGameActions';
+import useThemeModeSwitch from 'hooks/useThemeModeSwitch';
 import React from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
+import { setGameOver } from 'redux/features/gameSlice/gameSlice';
 import { useAppDispatch } from 'redux/hooks';
-import { colors } from 'utils/colors';
-import { images } from 'utils/images';
-import useModalAlert from '../../hooks/useModalAlert';
+import useModalAlert from '../../../hooks/useModalAlert';
+import GameDetails from '../Components/GameDetailsCard/GameDetails';
+import GameResultRow from '../Components/GameResultRow/GameResultRow';
+import PlayersNameRow from '../Components/PlayersNameRow/PlayersNameRow';
 import {
-  StyledGameActionsContainer,
-  StyledGameDetailsContainer,
-  StyledGameResultsContainer,
-  StyledInlineTypography,
-  StyledPlayerNameContainer,
-  StyledResultsScore,
+  StyledCustomButton,
+  StyledGameContainer,
+  StyledGameScreenContainer,
   StyledRoundsScoreContainer,
   StyledTextField,
-  StyledGameScreenContainer,
-  StyledDinerImageContainer,
-  StyledTeamModeImageContainer,
   StyledTextFieldContainer,
-  StyledCustomButton,
   StyledThemeSwitchContainer,
-  StyledGameContainer,
 } from './GameScreen.style';
-import useGameActions from 'hooks/useGameActions';
-import DarkLightModeSwitch from 'components/DarkLightModeSwitch/DarkLightModeSwitch';
-import useThemeModeSwitch from 'hooks/useThemeModeSwitch';
-import { setGameOver } from 'redux/features/gameSlice/gameSlice';
+import GameResultAndActions from '../Components/GameResultAndActions/GameResultAndActions';
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -114,17 +106,6 @@ const GameScreen = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    );
-  };
-  const renderPlayerName = () => {
-    return (
-      <StyledPlayerNameContainer>
-        {game.players.map((player, index) => (
-          <Typography variant="h6" key={index}>
-            {player.name}
-          </Typography>
-        ))}
-      </StyledPlayerNameContainer>
     );
   };
 
@@ -255,108 +236,10 @@ const GameScreen = () => {
     [game, getWinnersPlayers, isGameOverRef],
   );
 
-  const renderResults = () => {
-    return (
-      <Grid>
-        <Typography variant="h6" color={colors.darkBlue} marginLeft={2}>
-          Score :{' '}
-        </Typography>
-        <Grid>
-          <StyledGameResultsContainer>
-            {game.players.map((player, index) => (
-              <>
-                <StyledResultsScore
-                  key={index}
-                  isPlayerWin={ifPlayerOnWinnersPlayers(player)}
-                  isPlayerLost={ifPlayerOnLostPlayers(player)}
-                >
-                  {player.score}
-                </StyledResultsScore>
-                {index + 1 < game.players.length && (
-                  <Typography variant="h4" textAlign={'center'}>
-                    {' '}
-                    -{' '}
-                  </Typography>
-                )}
-              </>
-            ))}
-          </StyledGameResultsContainer>
-        </Grid>
-      </Grid>
-    );
-  };
-
   const resetRoundsAndPlayersScore = () => {
     resetForm();
     resetGame();
   };
-
-  const GameDetails = () => (
-    <StyledGameDetailsContainer>
-      <StyledInlineTypography>
-        <Typography variant="h5" fontFamily={'sans-serif'}>
-          Partie : {game.gameType} - Nombre des joueurs : {game.players.length}
-        </Typography>
-      </StyledInlineTypography>
-      {game.team && (
-        <StyledTeamModeImageContainer>
-          <Typography variant="h5" fontFamily={'sans-serif'} textAlign={'center'}>
-            Mode équipe activé
-          </Typography>
-          <img src={images.TEAMWORK} alt="team" width="50" />
-        </StyledTeamModeImageContainer>
-      )}
-      <StyledInlineTypography>
-        <Typography variant="h5" fontFamily={'sans-serif'} textAlign={'center'}>
-          Score à atteindre : {''}
-          {game.finalScore}
-        </Typography>
-      </StyledInlineTypography>
-    </StyledGameDetailsContainer>
-  );
-
-  const GameActions = () => (
-    <StyledGameActionsContainer>
-      {!checkIfGameIsOver() ? (
-        <Button
-          onClick={handleAlertOpen}
-          variant="contained"
-          style={{
-            backgroundColor: colors.red,
-          }}
-          sx={{ textTransform: 'none' }}
-        >
-          Quitter le jeu ?
-        </Button>
-      ) : (
-        <Grid>
-          <Typography style={{ color: colors.red }} variant="h4">
-            Terba7 a Youssef
-          </Typography>
-          <StyledDinerImageContainer>
-            <StyledImage src={images.EDINERI} width={250} height={323} />
-          </StyledDinerImageContainer>
-          <Grid gap={22} pt={2} pb={1}>
-            {game.players?.map(
-              (player, index) =>
-                checkIfPlayerWin(player) && (
-                  <Typography key={index} variant="h5" style={{ color: colors.lightBlue }}>
-                    {player.name} gagne avec un score: {player.score}
-                  </Typography>
-                ),
-            )}
-            <Button onClick={replayGameAction} variant="contained">
-              <ReplayIcon />
-            </Button>
-          </Grid>
-        </Grid>
-      )}
-    </StyledGameActionsContainer>
-  );
-
-  const PlayerNames = () => <Grid>{renderPlayerName()}</Grid>;
-
-  const GameResults = () => <Grid>{renderResults()}</Grid>;
 
   const { handleThemeModeChange } = useThemeModeSwitch();
 
@@ -365,16 +248,26 @@ const GameScreen = () => {
       <StyledThemeSwitchContainer>
         <DarkLightModeSwitch onChangeAction={handleThemeModeChange} />
       </StyledThemeSwitchContainer>
-      <GameDetails />
+      <GameDetails game={game} />
       <StyledGameContainer>
-        <GameActions />
+        <GameResultAndActions
+          game={game}
+          checkIfGameIsOver={checkIfGameIsOver}
+          checkIfPlayerWin={checkIfPlayerWin}
+          handleAlertOpen={handleAlertOpen}
+          replayGameAction={replayGameAction}
+        />
         <Divider />
-        <PlayerNames />
+        <PlayersNameRow game={game} />
 
         <RoundsScore />
         {isAlertOpen && renderAlertDialog()}
         <Divider />
-        <GameResults />
+        <GameResultRow
+          game={game}
+          ifPlayerOnWinnersPlayers={ifPlayerOnWinnersPlayers}
+          ifPlayerOnLostPlayers={ifPlayerOnLostPlayers}
+        />
       </StyledGameContainer>
     </StyledGameScreenContainer>
   );

@@ -1,16 +1,14 @@
-import { Grid } from '@mui/material';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import GameScreen from '../../GameScreen/GameScreen';
+import { openModal } from 'redux/features/modalSlice/modalSlice';
+import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { GameAttributes } from 'types/models/Game/Games';
+import { ThemeEnum } from 'utils/enum';
+import { persistData } from 'utils/helpers/storage.helpers';
+import GameScreen from '../../GameScreen/Screen/GameScreen';
 import GameSettingsModal from '../Components/GameSettingsModal/GameSettingsModal';
 import GameStartSection from '../Components/GameStartSection/GameStartSection';
-import { GameAttributes } from 'types/models/Game/Games';
-import { useAppDispatch, useAppSelector } from 'redux/hooks';
-import { openModal } from 'redux/features/modalSlice/modalSlice';
-import { useEffect } from 'react';
-import { persistData } from 'utils/helpers/storage.helpers';
-import { ThemeEnum } from 'utils/enum';
 import { StyledContainer } from './GameSettings.styles';
-import { setGameOver } from 'redux/features/gameSlice/gameSlice';
 
 const GameSettings = () => {
   const { reset } = useForm<GameAttributes>();

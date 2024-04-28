@@ -24,6 +24,7 @@ const PlayersNameInput = ({
           <StyledFormContainer>
             <h3>{`Player${i + 1}:`}</h3>
             <TextField
+              key={`Player${i + 1}:`}
               {...register(`playersName.${i}`, {
                 required: true,
                 pattern: /^[A-Za-z0-9]+$/i,
@@ -32,7 +33,6 @@ const PlayersNameInput = ({
                   message: 'Le nom du joueur doit contenir au moins 2 caractères',
                 },
               })}
-              key={i}
               id={`player${i + 1}`}
               variant="outlined"
               placeholder={`Player${i + 1}`}
