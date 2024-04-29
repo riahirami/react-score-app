@@ -24,5 +24,7 @@ export const StyledResultsScore = styled(Typography)<StyledResultsScoreProps>(
   ({ isPlayerWin, isPlayerLost, theme }) => ({
     color: theme.palette.common.white,
     backgroundColor: getPlayerResultBackgroundColor(theme, isPlayerLost, isPlayerWin),
+    fontSize: 20,
+    fontWeight: 'bold',
   }),
 );
