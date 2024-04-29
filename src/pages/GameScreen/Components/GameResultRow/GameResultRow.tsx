@@ -1,8 +1,10 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { Grid, Typography } from '@mui/material';
 import React from 'react';
 import { StyledGameResultsContainer, StyledResultsScore } from './GameResultRow.style';
 import { colors } from 'utils/colors';
 import { Game, Player } from 'types/interfaces/game';
+import CustomColumnGrid from 'components/CustomColumnGrid/CustomColumnGrid';
 
 interface GameResultRowProps {
   game: Game;
@@ -19,10 +21,11 @@ const GameResultRow = ({
       <Typography variant="h6" color={colors.darkBlue} marginLeft={2}>
         Score :{' '}
       </Typography>
-      <Grid>
-        <StyledGameResultsContainer>
+      <StyledGameResultsContainer>
+        <Grid container>
+          <CustomColumnGrid />
           {game.players.map((player, index) => (
-            <>
+            <CustomColumnGrid key={index} isMiddleGrid>
               <StyledResultsScore
                 key={index}
                 isPlayerWin={ifPlayerOnWinnersPlayers(player)}
@@ -30,16 +33,11 @@ const GameResultRow = ({
               >
                 {player.score}
               </StyledResultsScore>
-              {index + 1 < game.players.length && (
-                <Typography variant="h4" textAlign={'center'}>
-                  {' '}
-                  -{' '}
-                </Typography>
-              )}
-            </>
+            </CustomColumnGrid>
           ))}
-        </StyledGameResultsContainer>
-      </Grid>
+          <CustomColumnGrid />
+        </Grid>
+      </StyledGameResultsContainer>
     </Grid>
   );
 };

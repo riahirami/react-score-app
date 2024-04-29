@@ -27,7 +27,7 @@ const PlayersNameInput = ({
               key={`Player${i + 1}:`}
               {...register(`playersName.${i}`, {
                 required: true,
-                pattern: /^[A-Za-z0-9]+$/i,
+                pattern: /^[A-Za-z0-9\s]+$/i,
                 minLength: {
                   value: 2,
                   message: 'Le nom du joueur doit contenir au moins 2 caractères',

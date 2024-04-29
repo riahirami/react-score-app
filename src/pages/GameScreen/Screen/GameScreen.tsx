@@ -1,6 +1,5 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -21,15 +20,12 @@ import GameDetails from '../Components/GameDetailsCard/GameDetails';
 import GameResultRow from '../Components/GameResultRow/GameResultRow';
 import PlayersNameRow from '../Components/PlayersNameRow/PlayersNameRow';
 import {
-  StyledCustomButton,
   StyledGameContainer,
   StyledGameScreenContainer,
-  StyledRoundsScoreContainer,
-  StyledTextField,
-  StyledTextFieldContainer,
   StyledThemeSwitchContainer,
 } from './GameScreen.style';
 import GameResultAndActions from '../Components/GameResultAndActions/GameResultAndActions';
+import RoundRow from '../Components/RoundRow/RoundRow';
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -46,7 +42,6 @@ const GameScreen = () => {
     setGame,
     getWinnersPlayers,
     checkIfPlayerWin,
-    checkIfPlayerLost,
     checkIfGameIsOver,
     ifPlayerOnLostPlayers,
     ifPlayerOnWinnersPlayers,
@@ -112,86 +107,39 @@ const GameScreen = () => {
   const RoundsScore = () => {
     return (
       <Grid>
-        <StyledRoundsScoreContainer>
-          <h3>1</h3>
-          {game.players.map((player, index) => (
-            <StyledTextFieldContainer key={`player${index}`}>
-              <StyledTextField
-                placeholder="0"
-                id={`player${index}`}
-                key={index}
-                {...register(`${player.name}round${1}`, {
-                  required: 'This number is required .',
-                  pattern: { value: /^[0-9]*$/, message: 'Please enter a valid number' },
-                })}
-                defaultValue={0}
-                size="small"
-                onFocus={() => setValue(`${player.name}round${1}`, '')}
-                disabled={game.rounds.length >= 1}
-              />
-              {errors && errors[`${player.name}round${1}`]?.message && (
-                <Typography variant="subtitle2" color="error" textAlign={'center'}>
-                  {String(errors[`${player.name}round${1}`]?.message)}
-                </Typography>
-              )}
-            </StyledTextFieldContainer>
-          ))}
-          <StyledCustomButton
-            disabled={!isValid || game.rounds.length >= 1}
-            onClick={handleSubmit((data) => {
-              handleAddNewRowScore(data);
-            })}
-          >
-            <DoneOutlineIcon
-              sx={{
-                color: !isValid || game.rounds.length >= 1 ? 'grey' : 'white',
-              }}
-            />
-          </StyledCustomButton>
-        </StyledRoundsScoreContainer>
+        <RoundRow
+          roundNumber={1}
+          game={game}
+          register={register}
+          setValue={setValue}
+          errors={errors}
+          handleSubmit={handleSubmit}
+          handleAddNewRowScore={handleAddNewRowScore}
+          isValid={isValid}
+          checkIfPlayerWin={checkIfPlayerWin}
+          isTextFieldDisabled={game.rounds.length >= 1}
+          isButtonDisabled={!isValid || game.rounds.length >= 1}
+        />
+
         {game.rounds.map((round, index) => (
-          <StyledRoundsScoreContainer key={`field${index}`}>
-            <h3>{round.roundNumber + 1}</h3>
-            {game.players.map((player, key) => (
-              <StyledTextFieldContainer key={key}>
-                <StyledTextField
-                  id={`field${index}`}
-                  key={index}
-                  {...register(`${player.name}round${index + 2}`, {
-                    required: 'This number is required .',
-                    pattern: { value: /^[0-9]*$/, message: 'Please enter a valid number' },
-                  })}
-                  placeholder="0"
-                  defaultValue={0}
-                  size="small"
-                  onFocus={() => setValue(`${player.name}round${index + 2}`, '')}
-                  disabled={
-                    index !== game.rounds.length - 1 ||
-                    checkIfPlayerWin(player) ||
-                    ifPlayerOnLostPlayers(player) ||
-                    checkIfGameIsOver()
-                  }
-                />
-                {errors && errors[`${player.name}round${index + 2}`]?.message && (
-                  <Typography variant="subtitle2" color="error">
-                    {String(errors[`${player.name}round${index + 2}`]?.message)}
-                  </Typography>
-                )}
-              </StyledTextFieldContainer>
-            ))}
-            <StyledCustomButton
-              disabled={index !== game.rounds.length - 1 || checkIfGameIsOver()}
-              onClick={handleSubmit((data) => {
-                handleAddNewRowScore(data);
-              })}
-            >
-              <DoneOutlineIcon
-                sx={{
-                  color: index !== game.rounds.length - 1 || checkIfGameIsOver() ? 'grey' : 'white',
-                }}
-              />
-            </StyledCustomButton>
-          </StyledRoundsScoreContainer>
+          <RoundRow
+            key={`field${index}`}
+            roundNumber={round.roundNumber + 1}
+            game={game}
+            register={register}
+            setValue={setValue}
+            errors={errors}
+            handleSubmit={handleSubmit}
+            handleAddNewRowScore={handleAddNewRowScore}
+            isValid={isValid}
+            checkIfPlayerWin={checkIfPlayerWin}
+            isButtonDisabled={index !== game.rounds.length - 1 || checkIfGameIsOver()}
+            isTextFieldDisabled={
+              index !== game.rounds.length - 1 || checkIfGameIsOver()
+              // checkIfPlayerWin(player) ||
+              // ifPlayerOnLostPlayers(player) ||
+            }
+          />
         ))}
       </Grid>
     );

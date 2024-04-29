@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { styled } from '@mui/material';
 import { ThemeEnum } from 'utils/enum';
-export const StyledGameResultsContainer = styled('div')(({ theme }) => ({
+export const StyledGameResultsContainer = styled('div')(() => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -26,8 +26,8 @@ export const StyledResultsScore = styled('h3')<StyledResultsScoreProps>(
       : theme.palette.mode === ThemeEnum.DARK
       ? theme.palette.grey[500]
       : theme.palette.common.white,
-    padding: 8,
-    width: '155px',
-    textAlign: 'center',
+    // padding: 8,
+    // width: '155px',
+    // textAlign: 'center',
   }),
 );

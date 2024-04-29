@@ -1,7 +1,11 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import { TextField, styled } from '@mui/material';
+import { styled } from '@mui/material';
 import { GAME_SCREEN_MIN_WIDTH } from 'utils/constants';
 import { ThemeEnum } from 'utils/enum';
+
+export const StyledGameContainer = styled('div')(() => ({
+  minWidth: GAME_SCREEN_MIN_WIDTH,
+}));
 
 export const StyledGameScreenContainer = styled('div')(({ theme }) => ({
   // display: 'grid',
@@ -14,28 +18,6 @@ export const StyledGameScreenContainer = styled('div')(({ theme }) => ({
   minWidth: GAME_SCREEN_MIN_WIDTH,
   marginRight: 'auto',
   marginLeft: 'auto',
-}));
-
-export const StyledRoundsScoreContainer = styled('div')(() => ({
-  display: 'flex',
-  justifyContent: 'space-evenly',
-  alignItems: 'center',
-  gap: 16,
-  marginRight: '60px',
-  marginLeft: '60px',
-}));
-
-export const StyledTextFieldContainer = styled('div')(() => ({
-  width: '155px',
-  display: 'inline-grid',
-  justifyItems: 'center',
-}));
-
-export const StyledTextField = styled(TextField)(({ theme, disabled }) => ({
-  width: '55px',
-  textAlignLast: 'center',
-  border: `${!disabled} && 1px solid ${theme.palette.grey[400]}`,
-  borderRadius: 8,
 }));
 
 export const StyledCustomButton = styled('button')(({ theme, disabled }) => ({
@@ -65,8 +47,4 @@ export const StyledThemeSwitchContainer = styled('div')(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-end',
-}));
-
-export const StyledGameContainer = styled('div')(({ theme }) => ({
-  minWidth: GAME_SCREEN_MIN_WIDTH,
 }));
