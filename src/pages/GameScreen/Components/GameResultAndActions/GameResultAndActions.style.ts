@@ -1,16 +1,33 @@
-import { styled } from '@mui/material';
+import { Grid, styled } from '@mui/material';
+import { GAME_SCREEN_MIN_WIDTH } from 'utils/constants';
+import { ThemeEnum } from 'utils/enum';
 
-export const StyledGameActionsContainer = styled('div')(() => ({
+export const StyledContainer = styled(Grid)(() => ({
+  display: 'grid',
+  justifyContent: 'center',
+  padding: 10,
+}));
+export const StyledGameActionsContainer = styled(Grid)(({ theme }) => ({
   display: 'grid',
   justifyContent: 'center',
   textAlign: 'center',
   margin: 10,
+  backgroundColor:
+    theme.palette.mode === ThemeEnum.DARK ? theme.palette.grey[200] : theme.palette.grey[300],
+  marginTop: 15,
+  marginRight: 'auto',
+  marginLeft: 'auto',
+  color:
+    theme.palette.mode === ThemeEnum.DARK ? theme.palette.grey[400] : theme.palette.common.white,
+  minWidth: GAME_SCREEN_MIN_WIDTH,
+  width: '60%',
 }));
 
-export const StyledDinerImageContainer = styled('div')(() => ({
+export const StyledDinerImageContainer = styled(Grid)(() => ({
   position: 'fixed',
   bottom: 0,
   left: 0,
+  zIndex: 9999,
 }));
 
 export const StyledImage = styled('img')`

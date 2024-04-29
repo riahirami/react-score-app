@@ -11,21 +11,21 @@ import { TransitionProps } from '@mui/material/transitions';
 import DarkLightModeSwitch from 'components/DarkLightModeSwitch/DarkLightModeSwitch';
 import useGameActions from 'hooks/useGameActions';
 import useThemeModeSwitch from 'hooks/useThemeModeSwitch';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { setGameOver } from 'redux/features/gameSlice/gameSlice';
 import { useAppDispatch } from 'redux/hooks';
 import useModalAlert from '../../../hooks/useModalAlert';
 import GameDetails from '../Components/GameDetailsCard/GameDetails';
+import GameResultAndActions from '../Components/GameResultAndActions/GameResultAndActions';
 import GameResultRow from '../Components/GameResultRow/GameResultRow';
 import PlayersNameRow from '../Components/PlayersNameRow/PlayersNameRow';
+import RoundRow from '../Components/RoundRow/RoundRow';
 import {
   StyledGameContainer,
   StyledGameScreenContainer,
   StyledThemeSwitchContainer,
 } from './GameScreen.style';
-import GameResultAndActions from '../Components/GameResultAndActions/GameResultAndActions';
-import RoundRow from '../Components/RoundRow/RoundRow';
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -36,6 +36,7 @@ const Transition = React.forwardRef(function Transition(
 });
 
 const GameScreen = () => {
+  const { handleThemeModeChange } = useThemeModeSwitch();
   const dispatch = useAppDispatch();
   const {
     game,
@@ -48,6 +49,7 @@ const GameScreen = () => {
     isGameOverRef,
     resetGame,
   } = useGameActions();
+
   const {
     register,
     handleSubmit,
@@ -66,6 +68,10 @@ const GameScreen = () => {
     resetRoundsAndPlayersScore();
   };
 
+  const resetRoundsAndPlayersScore = () => {
+    resetForm();
+    resetGame();
+  };
   const { handleAlertClose, handleAlertOpen, isAlertOpen } = useModalAlert();
   const renderAlertDialog = () => {
     return (
@@ -104,48 +110,30 @@ const GameScreen = () => {
     );
   };
 
-  const RoundsScore = () => {
-    return (
-      <Grid>
-        <RoundRow
-          roundNumber={1}
-          game={game}
-          register={register}
-          setValue={setValue}
-          errors={errors}
-          handleSubmit={handleSubmit}
-          handleAddNewRowScore={handleAddNewRowScore}
-          isValid={isValid}
-          checkIfPlayerWin={checkIfPlayerWin}
-          isTextFieldDisabled={game.rounds.length >= 1}
-          isButtonDisabled={!isValid || game.rounds.length >= 1}
-        />
+  const handleRemoveScoreRow = useCallback(
+    (rowNumber: number) => {
+      const rounds = game.rounds;
 
-        {game.rounds.map((round, index) => (
-          <RoundRow
-            key={`field${index}`}
-            roundNumber={round.roundNumber + 1}
-            game={game}
-            register={register}
-            setValue={setValue}
-            errors={errors}
-            handleSubmit={handleSubmit}
-            handleAddNewRowScore={handleAddNewRowScore}
-            isValid={isValid}
-            checkIfPlayerWin={checkIfPlayerWin}
-            isButtonDisabled={index !== game.rounds.length - 1 || checkIfGameIsOver()}
-            isTextFieldDisabled={
-              index !== game.rounds.length - 1 || checkIfGameIsOver()
-              // checkIfPlayerWin(player) ||
-              // ifPlayerOnLostPlayers(player) ||
-            }
-          />
-        ))}
-      </Grid>
-    );
-  };
+      const newRounds = rounds.filter((round) => round.roundNumber === rowNumber);
 
-  const handleAddNewRowScore = React.useCallback(
+      setGame((prevState) => {
+        return {
+          ...prevState,
+          players: prevState.players.map((player) => {
+            return {
+              name: player.name,
+              playerIndex: player.playerIndex,
+              score: player.score - newRounds[0].playersScore[player.playerIndex - 1].score,
+            };
+          }),
+          rounds: rounds.filter((round) => round.roundNumber !== rowNumber),
+        };
+      });
+    },
+    [game, getWinnersPlayers, isGameOverRef],
+  );
+
+  const handleAddNewScoreRow = useCallback(
     (data: FieldValues) => {
       const rounds = game.rounds;
       const isGameOver = isGameOverRef.current;
@@ -184,13 +172,52 @@ const GameScreen = () => {
     [game, getWinnersPlayers, isGameOverRef],
   );
 
-  const resetRoundsAndPlayersScore = () => {
-    resetForm();
-    resetGame();
+  const RoundsScore = () => {
+    return (
+      <Grid>
+        <RoundRow
+          roundNumber={1}
+          game={game}
+          register={register}
+          setValue={setValue}
+          errors={errors}
+          handleSubmit={handleSubmit}
+          handleAddNewScoreRow={handleAddNewScoreRow}
+          handleRemoveScoreRow={handleRemoveScoreRow}
+          isValid={isValid}
+          checkIfPlayerWin={checkIfPlayerWin}
+          isTextFieldDisabled={game.rounds.length >= 1}
+          isButtonAddDisabled={!isValid || game.rounds.length >= 1}
+          isButtonRemoveDisabled={game.rounds.length !== 1}
+          pendingRound={1 === game.rounds.length + 1}
+        />
+
+        {game.rounds.map((round, index) => (
+          <RoundRow
+            key={`field${index}`}
+            roundNumber={round.roundNumber + 1}
+            game={game}
+            register={register}
+            setValue={setValue}
+            errors={errors}
+            handleSubmit={handleSubmit}
+            handleAddNewScoreRow={handleAddNewScoreRow}
+            handleRemoveScoreRow={handleRemoveScoreRow}
+            isValid={isValid}
+            checkIfPlayerWin={checkIfPlayerWin}
+            isButtonAddDisabled={index !== game.rounds.length - 1 || checkIfGameIsOver()}
+            isTextFieldDisabled={
+              index !== game.rounds.length - 1 || checkIfGameIsOver()
+              // checkIfPlayerWin(player) ||
+              // ifPlayerOnLostPlayers(player) ||
+            }
+            isButtonRemoveDisabled={game.rounds.length !== round.roundNumber + 1}
+            pendingRound={index === game.rounds.length - 1 && !checkIfGameIsOver()}
+          />
+        ))}
+      </Grid>
+    );
   };
-
-  const { handleThemeModeChange } = useThemeModeSwitch();
-
   return (
     <StyledGameScreenContainer>
       <StyledThemeSwitchContainer>

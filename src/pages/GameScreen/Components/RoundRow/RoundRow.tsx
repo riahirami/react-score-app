@@ -1,27 +1,29 @@
-import React from 'react';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import { Grid, Typography } from '@mui/material';
+import CustomColumnGrid from 'components/CustomColumnGrid/CustomColumnGrid';
+import React from 'react';
+import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
+import { Game, Player } from 'types/interfaces/game';
 import {
-  StyledRoundsScoreContainer,
-  StyledTextFieldContainer,
-  StyledTextField,
   StyledCustomButton,
   StyledGridContainer,
+  StyledRoundsScoreContainer,
+  StyledTextField,
+  StyledTextFieldContainer,
 } from './roundRow.style';
-import CustomColumnGrid from 'components/CustomColumnGrid/CustomColumnGrid';
-import { Game, Player } from 'types/interfaces/game';
-import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
-import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import { GameAttributes } from 'types/models/Game/Games';
-
+import { colors } from 'utils/colors';
 interface RoundRowProps {
   roundNumber: number;
   game: Game;
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors<FieldValues>;
-  handleAddNewRowScore: (data: FieldValues) => void;
+  handleAddNewScoreRow: (data: FieldValues) => void;
+  handleRemoveScoreRow: (rowNumber: number) => void;
   isValid: boolean;
   checkIfPlayerWin: (player: Player) => boolean;
-  isButtonDisabled: boolean;
+  isButtonAddDisabled: boolean;
+  isButtonRemoveDisabled: boolean;
   isTextFieldDisabled: boolean;
   handleSubmit: (
     callback: (data: FieldValues) => void,
@@ -31,6 +33,7 @@ interface RoundRowProps {
     value: FieldValues | string,
     options?: { shouldValidate?: boolean },
   ) => void;
+  pendingRound: boolean;
 }
 const RoundRow = ({
   roundNumber,
@@ -39,13 +42,20 @@ const RoundRow = ({
   setValue,
   errors,
   handleSubmit,
-  handleAddNewRowScore,
+  handleAddNewScoreRow,
+  handleRemoveScoreRow,
   isValid,
-  isButtonDisabled,
+  isButtonAddDisabled,
+  isButtonRemoveDisabled,
   isTextFieldDisabled,
+  pendingRound,
 }: RoundRowProps) => {
+  const addRowButtonWidth = isButtonRemoveDisabled ? 75 : 20;
+  const addButtonIconColor =
+    !isValid || game.rounds.length >= roundNumber ? colors.GREY : colors.WHITE;
+
   return (
-    <StyledRoundsScoreContainer>
+    <StyledRoundsScoreContainer pendingRound={pendingRound}>
       <StyledGridContainer container item xs={12} md={12} spacing={0}>
         <CustomColumnGrid>
           <h3>{roundNumber}</h3>
@@ -75,18 +85,33 @@ const RoundRow = ({
           </CustomColumnGrid>
         ))}
         <CustomColumnGrid>
-          <StyledCustomButton
-            disabled={isButtonDisabled}
-            onClick={handleSubmit((data) => {
-              handleAddNewRowScore(data);
-            })}
-          >
-            <DoneOutlineIcon
-              sx={{
-                color: !isValid || game.rounds.length >= roundNumber ? 'grey' : 'white',
-              }}
-            />
-          </StyledCustomButton>
+          <Grid>
+            <StyledCustomButton
+              disabled={isButtonAddDisabled}
+              onClick={handleSubmit((data) => {
+                handleAddNewScoreRow(data);
+              })}
+            >
+              <DoneOutlineIcon
+                sx={{
+                  color: addButtonIconColor,
+                  width: addRowButtonWidth,
+                }}
+              />
+            </StyledCustomButton>
+            {!isButtonRemoveDisabled && (
+              <StyledCustomButton
+                onClick={() => handleRemoveScoreRow(roundNumber)}
+                disabled={isButtonRemoveDisabled}
+              >
+                <DeleteForeverOutlinedIcon
+                  sx={{
+                    color: colors.WHITE,
+                  }}
+                />
+              </StyledCustomButton>
+            )}
+          </Grid>
         </CustomColumnGrid>
       </StyledGridContainer>
     </StyledRoundsScoreContainer>

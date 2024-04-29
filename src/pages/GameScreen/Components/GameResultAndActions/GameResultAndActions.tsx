@@ -1,14 +1,14 @@
-import { Button, Grid, Typography } from '@mui/material';
-import React from 'react';
-import { colors } from 'utils/colors';
 import ReplayIcon from '@mui/icons-material/Replay';
+import { Button, Grid, Typography } from '@mui/material';
+import { Game, Player } from 'types/interfaces/game';
+import { colors } from 'utils/colors';
+import { images } from 'utils/images';
 import {
+  StyledContainer,
   StyledDinerImageContainer,
   StyledGameActionsContainer,
   StyledImage,
 } from './GameResultAndActions.style';
-import { images } from 'utils/images';
-import { Game, Player } from 'types/interfaces/game';
 
 interface GameResultAndActionsProps {
   handleAlertOpen: () => void;
@@ -25,21 +25,21 @@ const GameResultAndActions = ({
   game,
 }: GameResultAndActionsProps) => {
   return (
-    <StyledGameActionsContainer>
+    <StyledContainer>
       {!checkIfGameIsOver() ? (
         <Button
           onClick={handleAlertOpen}
           variant="contained"
           style={{
-            backgroundColor: colors.red,
+            backgroundColor: colors.RED,
           }}
           sx={{ textTransform: 'none' }}
         >
           Quitter le jeu ?
         </Button>
       ) : (
-        <Grid>
-          <Typography style={{ color: colors.red }} variant="h4">
+        <StyledGameActionsContainer>
+          <Typography style={{ color: colors.RED }} variant="h4">
             Terba7 a Youssef
           </Typography>
           <StyledDinerImageContainer>
@@ -49,7 +49,7 @@ const GameResultAndActions = ({
             {game.players?.map(
               (player, index) =>
                 checkIfPlayerWin(player) && (
-                  <Typography key={index} variant="h5" style={{ color: colors.lightBlue }}>
+                  <Typography key={index} variant="h5" style={{ color: colors.LIGHT_BLUE }}>
                     {player.name} gagne avec un score: {player.score}
                   </Typography>
                 ),
@@ -58,9 +58,9 @@ const GameResultAndActions = ({
               <ReplayIcon />
             </Button>
           </Grid>
-        </Grid>
+        </StyledGameActionsContainer>
       )}
-    </StyledGameActionsContainer>
+    </StyledContainer>
   );
 };
 

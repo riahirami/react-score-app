@@ -5,13 +5,13 @@ const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: colors.darkBlue,
+      main: colors.DARK_BLUE,
     },
     secondary: {
-      main: colors.lightBlue,
+      main: colors.LIGHT_BLUE,
     },
     error: {
-      main: colors.red,
+      main: colors.RED,
     },
     background: {
       default: '#fff',
@@ -23,13 +23,13 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: colors.lightBlue,
+      main: colors.LIGHT_BLUE,
     },
     secondary: {
-      main: colors.darkBlue,
+      main: colors.DARK_BLUE,
     },
     error: {
-      main: colors.red,
+      main: colors.RED,
     },
     background: {
       default: '#282c34',

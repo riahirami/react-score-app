@@ -1,10 +1,10 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import { styled } from '@mui/material';
+import { Grid, styled } from '@mui/material';
 import { colors } from 'utils/colors';
 import { GAME_SCREEN_MIN_WIDTH } from 'utils/constants';
 import { ThemeEnum } from 'utils/enum';
 
-export const StyledInlineTypography = styled('div')(() => ({
+export const StyledInlineTypography = styled(Grid)(() => ({
   justifyContent: 'center',
   alignItems: 'center',
   padding: 12,
@@ -12,12 +12,12 @@ export const StyledInlineTypography = styled('div')(() => ({
   paddingRight: 24,
 }));
 
-export const StyledGameDetailsContainer = styled('div')(({ theme }) => ({
+export const StyledGameDetailsContainer = styled(Grid)(({ theme }) => ({
   justifyContent: 'center',
   border: '2px solid',
   borderColor: `${theme.palette.primary.main}`,
   backgroundColor:
-    theme.palette.mode === ThemeEnum.DARK ? colors.darkBlue : theme.palette.info.dark,
+    theme.palette.mode === ThemeEnum.DARK ? colors.DARK_BLUE : theme.palette.info.dark,
   borderRadius: '12px',
   margin: 15,
   textAlign: 'center',
@@ -29,7 +29,7 @@ export const StyledGameDetailsContainer = styled('div')(({ theme }) => ({
   width: '60%',
 }));
 
-export const StyledTeamModeImageContainer = styled('div')(() => ({
+export const StyledTeamModeImageContainer = styled(Grid)(() => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'end',

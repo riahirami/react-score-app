@@ -1,13 +1,13 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import { styled } from '@mui/material';
+import { Button, Grid, styled } from '@mui/material';
 import { GAME_SCREEN_MIN_WIDTH } from 'utils/constants';
 import { ThemeEnum } from 'utils/enum';
 
-export const StyledGameContainer = styled('div')(() => ({
+export const StyledGameContainer = styled(Grid)(() => ({
   minWidth: GAME_SCREEN_MIN_WIDTH,
 }));
 
-export const StyledGameScreenContainer = styled('div')(({ theme }) => ({
+export const StyledGameScreenContainer = styled(Grid)(({ theme }) => ({
   // display: 'grid',
   justifyContent: 'center',
   backgroundColor:
@@ -18,9 +18,10 @@ export const StyledGameScreenContainer = styled('div')(({ theme }) => ({
   minWidth: GAME_SCREEN_MIN_WIDTH,
   marginRight: 'auto',
   marginLeft: 'auto',
+  marginBottom: 100,
 }));
 
-export const StyledCustomButton = styled('button')(({ theme, disabled }) => ({
+export const StyledCustomButton = styled(Button)(({ theme, disabled }) => ({
   backgroundColor: disabled
     ? theme.palette.grey[600]
     : theme.palette.mode === ThemeEnum.DARK
@@ -43,7 +44,7 @@ export const StyledCustomButton = styled('button')(({ theme, disabled }) => ({
   },
 }));
 
-export const StyledThemeSwitchContainer = styled('div')(() => ({
+export const StyledThemeSwitchContainer = styled(Grid)(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-end',

@@ -1,10 +1,13 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { Grid, Typography } from '@mui/material';
-import React from 'react';
-import { StyledGameResultsContainer, StyledResultsScore } from './GameResultRow.style';
-import { colors } from 'utils/colors';
-import { Game, Player } from 'types/interfaces/game';
 import CustomColumnGrid from 'components/CustomColumnGrid/CustomColumnGrid';
+import { Game, Player } from 'types/interfaces/game';
+import { colors } from 'utils/colors';
+import {
+  StyledGameResultContainer,
+  StyledGameResultsRowContainer,
+  StyledResultsScore,
+} from './GameResultRow.style';
 
 interface GameResultRowProps {
   game: Game;
@@ -17,11 +20,11 @@ const GameResultRow = ({
   ifPlayerOnLostPlayers,
 }: GameResultRowProps) => {
   return (
-    <Grid>
-      <Typography variant="h6" color={colors.darkBlue} marginLeft={2}>
+    <StyledGameResultContainer>
+      <Typography variant="h6" color={colors.WHITE} marginLeft={2}>
         Score :{' '}
       </Typography>
-      <StyledGameResultsContainer>
+      <StyledGameResultsRowContainer>
         <Grid container>
           <CustomColumnGrid />
           {game.players.map((player, index) => (
@@ -37,8 +40,8 @@ const GameResultRow = ({
           ))}
           <CustomColumnGrid />
         </Grid>
-      </StyledGameResultsContainer>
-    </Grid>
+      </StyledGameResultsRowContainer>
+    </StyledGameResultContainer>
   );
 };
 

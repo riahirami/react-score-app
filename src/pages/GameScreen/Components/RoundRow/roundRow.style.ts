@@ -1,9 +1,16 @@
 import { Grid, TextField, styled } from '@mui/material';
 import { ThemeEnum } from 'utils/enum';
-
-export const StyledRoundsScoreContainer = styled(Grid)(() => ({
-  display: 'flex',
-}));
+import { getButtonBackgroundColor, getPendingRoundColor } from 'utils/helpers/helpers';
+interface StyledRoundsScoreContainerProps {
+  pendingRound: boolean;
+}
+export const StyledRoundsScoreContainer = styled(Grid)<StyledRoundsScoreContainerProps>(
+  ({ theme, pendingRound }) => ({
+    display: 'flex',
+    backgroundColor: getPendingRoundColor(pendingRound, theme),
+    opacity: !pendingRound ? 0.5 : 1,
+  }),
+);
 
 export const StyledGridContainer = styled(Grid)(() => ({
   alignItems: 'center',
@@ -17,11 +24,8 @@ export const StyledTextField = styled(TextField)(({ theme, disabled }) => ({
 }));
 
 export const StyledCustomButton = styled('button')(({ theme, disabled }) => ({
-  backgroundColor: disabled
-    ? theme.palette.grey[600]
-    : theme.palette.mode === ThemeEnum.DARK
-    ? theme.palette.primary.dark
-    : theme.palette.primary.light,
+  margin: 4,
+  backgroundColor: getButtonBackgroundColor(disabled, theme).simple,
   border:
     disabled && theme.palette.mode === ThemeEnum.DARK
       ? `0.5px solid ${theme.palette.grey[600]}`
@@ -30,11 +34,7 @@ export const StyledCustomButton = styled('button')(({ theme, disabled }) => ({
   borderRadius: 8,
   cursor: 'pointer',
   '&:hover': {
-    backgroundColor: disabled
-      ? 'none'
-      : theme.palette.mode === ThemeEnum.DARK
-      ? theme.palette.primary.light
-      : theme.palette.grey[400],
+    backgroundColor: getButtonBackgroundColor(disabled, theme).hover,
     cursor: disabled ? 'default' : 'pointer',
   },
 }));

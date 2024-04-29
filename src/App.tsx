@@ -4,7 +4,6 @@ import useThemeModeSwitch from 'hooks/useThemeModeSwitch';
 import { ThemeProvider } from '@mui/material/styles';
 import { useMemo } from 'react';
 import generateTheme from 'theme/theme';
-import { Grid } from '@mui/material';
 
 function App() {
   const { themeMode } = useThemeModeSwitch();

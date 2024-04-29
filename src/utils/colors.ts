@@ -1,8 +1,11 @@
 export const colors = {
-  red: '#c50213',
-  greenBlue: '#a8dadc',
-  lightBlue: '#457b9d',
-  darkBlue: '#1d3557',
+  RED: '#c50213',
+  LIGHT_BLUE: '#457b9d',
+  DARK_BLUE: '#1d3557',
+  WHITE: '#FFFFFF',
+  WHITE_GREY: '#e6e6e6',
+  BLACK: '#000000',
+  GREY: '#7f7e7e',
 };
 
 export const ColorsConfig = {
