@@ -31,8 +31,10 @@ import {
   GAME_TYPE_RADIO_OPTIONS,
   PLAYERS_NUMBER_RADIO_OPTIONS,
 } from 'utils/constants';
+import { useTranslation } from 'react-i18next';
 
 const GameSettingsModal = () => {
+  const { t } = useTranslation();
   const [playersNumberValue, setPlayersNumberValue] = useState(
     Number(GAME_NUMBER_OF_DEFAULT_PLAYER),
   );
@@ -92,11 +94,13 @@ const GameSettingsModal = () => {
 
   return (
     <CustomModal
-      title={'Nouvelle partie'}
+      title={t('Game_Actions.New_Game')}
       confirmAction={handleSubmit((data) => {
         createGameAction(data);
       })}
       isConfirmButtonDisabled={!isValid}
+      cancelText={t('Modal.Common.Cancel')}
+      confirmText={t('Modal.Common.Confirm')}
     >
       <StyledForm>
         <FormControl>
@@ -110,13 +114,13 @@ const GameSettingsModal = () => {
                 onChange={(value) => {
                   handlePlayersNumberChange(value);
                 }}
-                label="Nombre des joueurs"
+                label={t('Game_Settings.Player_number')}
               />
 
               {playersNumberValue === GamePlayerNumberEnum.FOUR && (
                 <FormGroup id="handleTeamModeChange">
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography>Individuel</Typography>
+                    <Typography>{t('Game_Settings.Game_Mode.Single')}</Typography>
 
                     <FormControlLabel
                       {...register('team')}
@@ -129,7 +133,7 @@ const GameSettingsModal = () => {
                       }
                       label=""
                     />
-                    <Typography>Equipe</Typography>
+                    <Typography>{t('Game_Settings.Game_Mode.Team')}</Typography>
                   </Stack>
                 </FormGroup>
               )}
@@ -138,9 +142,11 @@ const GameSettingsModal = () => {
                 name="gameType"
                 register={register}
                 defaultValue={GameTypeEnum.RAMI}
-                label="Type de jeu"
+                label={t('Game_Settings.Game_type')}
               />
-              <FormLabel id="game-type-radio-buttons-group-label">Score à atteindre </FormLabel>
+              <FormLabel id="game-type-radio-buttons-group-label">
+                {t('Game_Settings.Final_score')}
+              </FormLabel>
               <TextField
                 id="final-score"
                 variant="outlined"

@@ -1,0 +1,50 @@
+export const ar = {
+  app_name: 'Score App',
+  not_found_page_title: '404 Page not found',
+  Game: 'طرح',
+  Game_mode: 'طرح أصحاب',
+  Player_number: 'ملاعبية',
+  Game_score: 'الطرح على',
+  Winner_is: 'الفائز هو',
+  Winner_message: 'تخسر ها يوسف',
+  Game_Settings: {
+    Player_number: 'عدد اللاعبين',
+    Game_type: 'نوع الطرح',
+    Final_score: 'النقاط النهائية',
+    Player_name: 'اللاعب',
+    Game_Mode: {
+      Team: 'طرح أصحاب',
+      Single: 'طرح فردي',
+    },
+  },
+  Game_Actions: {
+    Quit: 'تخرج',
+    Replay: 'تعاود',
+    New_Game: 'طرح جديد',
+  },
+  GameTypeEnum: {
+    Rami: 'رامي',
+    Chkobba: 'شكبة',
+  },
+  Score: 'السكور',
+  Modal: {
+    Common: {
+      Yes: 'نعم',
+      No: 'لا',
+      Cancel: 'إلغاء',
+      Confirm: 'تأكيد',
+    },
+    Exit: {
+      title: 'تخرج من الطرح',
+      content: 'أنت على وشك تخرج من الطرح، هل أنت متأكد؟',
+    },
+  },
+  Language: 'اللغة',
+  refetch: 'Refetch',
+  fetching: 'Fetching',
+  false: 'False',
+  this_button_clicked_times: 'This button is clicked {{buttonClickedCount}} times',
+  this_button_clicked_time: 'This button is clicked {{buttonClickedCount}} time',
+  this_data_is_refetched_times: 'This data is refetched {{refetchCount}} times',
+  this_data_is_refetched_time: 'This data is refetched {{refetchCount}} time',
+};

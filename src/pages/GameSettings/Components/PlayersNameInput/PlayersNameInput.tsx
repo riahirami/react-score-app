@@ -2,6 +2,7 @@ import { Grid, TextField, Typography } from '@mui/material';
 import { StyledFormContainer } from './playersNameInput.styles';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import { GameAttributes } from 'types/models/Game/Games';
+import { useTranslation } from 'react-i18next';
 
 interface PlayersNameInputProps {
   isTeamModeActivated: boolean;
@@ -16,13 +17,15 @@ const PlayersNameInput = ({
   errors,
 }: PlayersNameInputProps) => {
   const renderPlayersNameInput = (playersNumber: number) => {
+    const { t } = useTranslation();
+
     const playersNameInput = [];
     const numberOfPlayers = isTeamModeActivated ? playersNumber / 2 : playersNumber;
     for (let i = 0; i < numberOfPlayers; i++) {
       playersNameInput.push(
         <Grid>
           <StyledFormContainer>
-            <h3>{`Player${i + 1}:`}</h3>
+            <h3>{t('Game_Settings.Player_name') + `${i + 1}:`}</h3>
             <TextField
               key={`Player${i + 1}:`}
               {...register(`playersName.${i}`, {

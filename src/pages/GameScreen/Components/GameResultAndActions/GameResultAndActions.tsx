@@ -9,7 +9,9 @@ import {
   StyledGameActionsContainer,
   StyledImage,
 } from './GameResultAndActions.style';
-
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import { use } from 'i18next';
+import { useTranslation } from 'react-i18next';
 interface GameResultAndActionsProps {
   handleAlertOpen: () => void;
   replayGameAction: () => void;
@@ -24,9 +26,10 @@ const GameResultAndActions = ({
   checkIfPlayerWin,
   game,
 }: GameResultAndActionsProps) => {
+  const { t } = useTranslation();
   return (
     <StyledContainer>
-      {!checkIfGameIsOver() ? (
+      <Grid container gap={2} justifyContent={'center'}>
         <Button
           onClick={handleAlertOpen}
           variant="contained"
@@ -35,12 +38,23 @@ const GameResultAndActions = ({
           }}
           sx={{ textTransform: 'none' }}
         >
-          Quitter le jeu ?
+          <LogoutOutlinedIcon /> {t('Game_Actions.Quit')}
         </Button>
-      ) : (
+        <Button
+          onClick={replayGameAction}
+          style={{
+            backgroundColor: colors.DARK_BLUE,
+          }}
+          variant="contained"
+          sx={{ textTransform: 'none' }}
+        >
+          <ReplayIcon /> {t('Game_Actions.Replay')}
+        </Button>
+      </Grid>
+      {checkIfGameIsOver() && (
         <StyledGameActionsContainer>
           <Typography style={{ color: colors.RED }} variant="h4">
-            Terba7 a Youssef
+            {t('Winner_message')}
           </Typography>
           <StyledDinerImageContainer>
             <StyledImage src={images.EDINERI} width={250} height={323} />
@@ -49,14 +63,15 @@ const GameResultAndActions = ({
             {game.players?.map(
               (player, index) =>
                 checkIfPlayerWin(player) && (
-                  <Typography key={index} variant="h5" style={{ color: colors.LIGHT_BLUE }}>
-                    {player.name} gagne avec un score: {player.score}
+                  <Typography
+                    key={`${player.playerIndex}.${index}`}
+                    variant="h5"
+                    style={{ color: colors.LIGHT_BLUE, direction: 'rtl' }}
+                  >
+                    {player.name} {t('Winner_is')} {player.score}
                   </Typography>
                 ),
             )}
-            <Button onClick={replayGameAction} variant="contained">
-              <ReplayIcon />
-            </Button>
           </Grid>
         </StyledGameActionsContainer>
       )}

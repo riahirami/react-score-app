@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import { Button, Grid, styled } from '@mui/material';
+import { Button, DialogActions, Grid, styled } from '@mui/material';
 import { GAME_SCREEN_MIN_WIDTH } from 'utils/constants';
 import { ThemeEnum } from 'utils/enum';
 
@@ -46,6 +46,13 @@ export const StyledCustomButton = styled(Button)(({ theme, disabled }) => ({
 
 export const StyledThemeSwitchContainer = styled(Grid)(() => ({
   display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-end',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-evenly',
+}));
+
+export const StyledExitModalButtonContainer = styled(DialogActions)(() => ({
+  display: 'flex',
+  justifyContent: 'center',
+  gap: 8,
 }));

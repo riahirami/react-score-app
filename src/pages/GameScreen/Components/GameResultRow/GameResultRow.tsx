@@ -8,6 +8,9 @@ import {
   StyledGameResultsRowContainer,
   StyledResultsScore,
 } from './GameResultRow.style';
+import { useTranslation } from 'react-i18next';
+import useLanguageChange from 'hooks/useLanguageChange';
+import useDesignDirection from 'hooks/useDesignDirection';
 
 interface GameResultRowProps {
   game: Game;
@@ -19,16 +22,20 @@ const GameResultRow = ({
   ifPlayerOnWinnersPlayers,
   ifPlayerOnLostPlayers,
 }: GameResultRowProps) => {
+  const { t } = useTranslation();
+  const { direction } = useDesignDirection();
+
   return (
-    <StyledGameResultContainer>
+    <StyledGameResultContainer customDirection={direction}>
       <Typography variant="h6" color={colors.WHITE} marginLeft={2}>
-        Score :{' '}
+        {t('Score')} :{' '}
       </Typography>
-      <StyledGameResultsRowContainer>
+      <StyledGameResultsRowContainer customDirection={direction}>
         <Grid container>
           <CustomColumnGrid />
           {game.players.map((player, index) => (
             <CustomColumnGrid key={index} isMiddleGrid>
+              <Typography>{player.name}</Typography>
               <StyledResultsScore
                 key={index}
                 isPlayerWin={ifPlayerOnWinnersPlayers(player)}

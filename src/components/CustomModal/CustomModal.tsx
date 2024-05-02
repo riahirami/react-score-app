@@ -4,9 +4,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Divider from '@mui/material/Divider';
+import useDesignDirection from 'hooks/useDesignDirection';
 import React from 'react';
 import { closeModal } from 'redux/features/modalSlice/modalSlice';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { CustomModalStyle, StyledExitModalButtonContainer } from './CustomModal.style';
 
 interface CustomModalProps {
   children: React.ReactNode;
@@ -27,6 +29,7 @@ const CustomModal = ({
 }: CustomModalProps) => {
   const isModalOpen = useAppSelector((state) => state.modal.isOpen);
   const dispatch = useAppDispatch();
+  const { direction } = useDesignDirection();
 
   const handleClose = (): void => {
     dispatch(closeModal());
@@ -40,18 +43,23 @@ const CustomModal = ({
   };
 
   return (
-    <Dialog open={isModalOpen} onClose={handleClose} fullWidth>
+    <CustomModalStyle
+      open={isModalOpen}
+      onClose={handleClose}
+      fullWidth
+      customDirection={direction}
+    >
       <DialogTitle>{title}</DialogTitle>
       <Divider />
       <DialogContent>
         <DialogContentText>{children}</DialogContentText>
       </DialogContent>
       <Divider />
-      <DialogActions>
+      <StyledExitModalButtonContainer>
         <Button
           onClick={handleClose}
           variant="contained"
-          color="error"
+          color={'error'}
           sx={{ textTransform: 'capitalize' }}
         >
           {cancelText}
@@ -59,14 +67,13 @@ const CustomModal = ({
         <Button
           onClick={handleConfirm}
           variant="contained"
-          color="info"
           disabled={isConfirmButtonDisabled}
           sx={{ textTransform: 'capitalize' }}
         >
           {confirmText}
         </Button>
-      </DialogActions>
-    </Dialog>
+      </StyledExitModalButtonContainer>
+    </CustomModalStyle>
   );
 };
 

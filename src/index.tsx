@@ -7,10 +7,10 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import theme from 'theme/shared-theme';
 import App from './App';
-import i18n from './i18n';
 import { store } from './redux/store';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import i18n from 'locales/i18n';
 /*
  * Get the root element from the DOM and check if it already exists
  */

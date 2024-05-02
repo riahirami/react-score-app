@@ -9,12 +9,17 @@ import Divider from '@mui/material/Divider';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import DarkLightModeSwitch from 'components/DarkLightModeSwitch/DarkLightModeSwitch';
+import LanguageSwitch from 'components/LanguageSwitch/LanguageSwitch';
+import PlayWinAudio from 'components/PlayWinAudio/PlayWinAudio';
 import useGameActions from 'hooks/useGameActions';
+import useLanguageChange from 'hooks/useLanguageChange';
 import useThemeModeSwitch from 'hooks/useThemeModeSwitch';
 import React, { useCallback } from 'react';
-import { FieldValues, useForm } from 'react-hook-form';
+import { FieldValues, FormProvider, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { setGameOver } from 'redux/features/gameSlice/gameSlice';
 import { useAppDispatch } from 'redux/hooks';
+import { audio } from 'utils/audio';
 import useModalAlert from '../../../hooks/useModalAlert';
 import GameDetails from '../Components/GameDetailsCard/GameDetails';
 import GameResultAndActions from '../Components/GameResultAndActions/GameResultAndActions';
@@ -22,10 +27,12 @@ import GameResultRow from '../Components/GameResultRow/GameResultRow';
 import PlayersNameRow from '../Components/PlayersNameRow/PlayersNameRow';
 import RoundRow from '../Components/RoundRow/RoundRow';
 import {
+  StyledExitModalButtonContainer,
   StyledGameContainer,
   StyledGameScreenContainer,
   StyledThemeSwitchContainer,
 } from './GameScreen.style';
+import useDesignDirection from 'hooks/useDesignDirection';
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement;
@@ -37,6 +44,9 @@ const Transition = React.forwardRef(function Transition(
 
 const GameScreen = () => {
   const { handleThemeModeChange } = useThemeModeSwitch();
+  const { changeLanguage, currentLanguage } = useLanguageChange();
+  const { t } = useTranslation();
+  const { direction } = useDesignDirection();
   const dispatch = useAppDispatch();
   const {
     game,
@@ -49,16 +59,6 @@ const GameScreen = () => {
     isGameOverRef,
     resetGame,
   } = useGameActions();
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset: resetForm,
-    formState: { isValid, errors },
-  } = useForm({
-    mode: 'onChange',
-  });
 
   const endGameAction = () => {
     dispatch(setGameOver());
@@ -81,21 +81,22 @@ const GameScreen = () => {
         keepMounted
         onClose={handleAlertClose}
         aria-describedby="alert-dialog-slide-description"
+        dir={direction}
       >
-        <DialogTitle>Quitter le jeu ?</DialogTitle>
+        <DialogTitle>{t('Modal.Exit.title')}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Vous êtes sur le point de quitter le jeu, êtes-vous sûr ?
+            {t('Modal.Exit.content')}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
+        <StyledExitModalButtonContainer>
           <Button
             onClick={handleAlertClose}
             variant="contained"
-            color={'info'}
+            color={'primary'}
             sx={{ textTransform: 'capitalize' }}
           >
-            Non
+            {t('Modal.Common.No')}
           </Button>
           <Button
             onClick={endGameAction}
@@ -103,9 +104,9 @@ const GameScreen = () => {
             color={'error'}
             sx={{ textTransform: 'capitalize' }}
           >
-            Oui
+            {t('Modal.Common.Yes')}
           </Button>
-        </DialogActions>
+        </StyledExitModalButtonContainer>
       </Dialog>
     );
   };
@@ -172,49 +173,56 @@ const GameScreen = () => {
     [game, getWinnersPlayers, isGameOverRef],
   );
 
+  const formMethods = useForm({
+    mode: 'onChange',
+    shouldFocusError: true,
+  });
+
+  const handleSubmit = formMethods.handleSubmit((data) => {
+    handleAddNewScoreRow(data);
+  });
+
+  const isValid = formMethods.formState.isValid;
+
+  const resetForm = formMethods.reset;
+
   const RoundsScore = () => {
     return (
       <Grid>
-        <RoundRow
-          roundNumber={1}
-          game={game}
-          register={register}
-          setValue={setValue}
-          errors={errors}
-          handleSubmit={handleSubmit}
-          handleAddNewScoreRow={handleAddNewScoreRow}
-          handleRemoveScoreRow={handleRemoveScoreRow}
-          isValid={isValid}
-          checkIfPlayerWin={checkIfPlayerWin}
-          isTextFieldDisabled={game.rounds.length >= 1}
-          isButtonAddDisabled={!isValid || game.rounds.length >= 1}
-          isButtonRemoveDisabled={game.rounds.length !== 1}
-          pendingRound={1 === game.rounds.length + 1}
-        />
-
-        {game.rounds.map((round, index) => (
+        <FormProvider {...formMethods}>
           <RoundRow
-            key={`field${index}`}
-            roundNumber={round.roundNumber + 1}
+            roundNumber={1}
             game={game}
-            register={register}
-            setValue={setValue}
-            errors={errors}
             handleSubmit={handleSubmit}
-            handleAddNewScoreRow={handleAddNewScoreRow}
             handleRemoveScoreRow={handleRemoveScoreRow}
             isValid={isValid}
             checkIfPlayerWin={checkIfPlayerWin}
-            isButtonAddDisabled={index !== game.rounds.length - 1 || checkIfGameIsOver()}
-            isTextFieldDisabled={
-              index !== game.rounds.length - 1 || checkIfGameIsOver()
-              // checkIfPlayerWin(player) ||
-              // ifPlayerOnLostPlayers(player) ||
-            }
-            isButtonRemoveDisabled={game.rounds.length !== round.roundNumber + 1}
-            pendingRound={index === game.rounds.length - 1 && !checkIfGameIsOver()}
+            isTextFieldDisabled={game.rounds.length >= 1}
+            isButtonAddDisabled={game.rounds.length >= 1}
+            isButtonRemoveDisabled={game.rounds.length !== 1}
+            pendingRound={1 === game.rounds.length + 1}
           />
-        ))}
+
+          {game.rounds.map((round, index) => (
+            <RoundRow
+              key={`field${index}`}
+              roundNumber={round.roundNumber + 1}
+              game={game}
+              handleSubmit={handleSubmit}
+              handleRemoveScoreRow={handleRemoveScoreRow}
+              isValid={isValid}
+              checkIfPlayerWin={checkIfPlayerWin}
+              isButtonAddDisabled={index !== game.rounds.length - 1 || checkIfGameIsOver()}
+              isTextFieldDisabled={
+                index !== game.rounds.length - 1 || checkIfGameIsOver()
+                // checkIfPlayerWin(player) ||
+                // ifPlayerOnLostPlayers(player) ||
+              }
+              isButtonRemoveDisabled={game.rounds.length !== round.roundNumber + 1}
+              pendingRound={index === game.rounds.length - 1 && !checkIfGameIsOver()}
+            />
+          ))}
+        </FormProvider>
       </Grid>
     );
   };
@@ -222,6 +230,7 @@ const GameScreen = () => {
     <StyledGameScreenContainer>
       <StyledThemeSwitchContainer>
         <DarkLightModeSwitch onChangeAction={handleThemeModeChange} />
+        <LanguageSwitch onChangeLanguageAction={changeLanguage} currentLanguage={currentLanguage} />
       </StyledThemeSwitchContainer>
       <GameDetails game={game} />
       <StyledGameContainer>
@@ -243,6 +252,7 @@ const GameScreen = () => {
           ifPlayerOnWinnersPlayers={ifPlayerOnWinnersPlayers}
           ifPlayerOnLostPlayers={ifPlayerOnLostPlayers}
         />
+        <PlayWinAudio shouldPlayAudio={checkIfGameIsOver()} audioSrc={audio.AUDIO} />
       </StyledGameContainer>
     </StyledGameScreenContainer>
   );
