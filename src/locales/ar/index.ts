@@ -6,7 +6,7 @@ export const ar = {
   Player_number: 'ملاعبية',
   Game_score: 'الطرح على',
   Winner_is: 'الفائز هو',
-  Winner_message: 'تخسر ها يوسف',
+  Winner_message: 'تخسرها يوسف',
   Game_Settings: {
     Player_number: 'عدد اللاعبين',
     Game_type: 'نوع الطرح',
@@ -21,6 +21,9 @@ export const ar = {
     Quit: 'تخرج',
     Replay: 'تعاود',
     New_Game: 'طرح جديد',
+    Join_Game: 'عندك كود طرح ؟',
+    Code: 'كود الطرح',
+    Resume_Game: ' عندك طرح تحب تكملو ؟',
   },
   GameTypeEnum: {
     Rami: 'رامي',
@@ -33,13 +36,33 @@ export const ar = {
       No: 'لا',
       Cancel: 'إلغاء',
       Confirm: 'تأكيد',
+      Ok: 'مريڨل',
     },
     Exit: {
       title: 'تخرج من الطرح',
-      content: 'أنت على وشك تخرج من الطرح، هل أنت متأكد؟',
+      content: 'متأكد تحب تخرج من الطرح ؟ ',
+      resumeGameNote: 'الطرح مازال ما وفاش كان تحب ترجع تنجم تستعمل الكود هذا ',
+    },
+    Share_Code: {
+      title: 'كود الطرح',
+      Description: 'أعطي الكود لأصحابك باش يتبعو معاك السكور',
+    },
+    Game_Over: {
+      title: 'الطرح وفا',
+      content: 'الطرح وفا وما تنجمش ترجع تدخلو',
+    },
+    Resume_Game: {
+      title: 'تكمل الطرح',
+      content: 'عندك كود طرح تحب تكملو ؟',
+    },
+    Unauthorized: {
+      title: 'ما عندكش الصلاحية',
+      content: 'ما عندكش الصلاحية باش تدخل هنا',
     },
   },
+  Preview_Mode: 'تتفرج',
   Language: 'اللغة',
+  No_data_to_display: 'مازال ما فماش سكور، الطرح مازال ما بداش',
   refetch: 'Refetch',
   fetching: 'Fetching',
   false: 'False',
@@ -47,4 +70,5 @@ export const ar = {
   this_button_clicked_time: 'This button is clicked {{buttonClickedCount}} time',
   this_data_is_refetched_times: 'This data is refetched {{refetchCount}} times',
   this_data_is_refetched_time: 'This data is refetched {{refetchCount}} time',
+  Share_Game_Code: 'أعطي الكود لأصحابك باش يتبعو معاك السكور',
 };

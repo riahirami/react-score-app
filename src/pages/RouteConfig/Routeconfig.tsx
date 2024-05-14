@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import GameSettings from '../GameSettings/Screen/GameSettings';
+import GameSettings from '../GameSettings/Screen/Home';
 
 const Routeconfig = () => {
   return (

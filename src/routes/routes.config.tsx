@@ -1,16 +1,44 @@
 import { RouteIdEnum } from 'config/enums';
-import GameSettings from 'pages/GameSettings/Screen/GameSettings';
+import MainLayout from 'layouts/mainLayout/MainLayout';
+import GameScreen from 'pages/GameScreen/Screen/GameScreen/GameScreen';
+import GameScreenPreview from 'pages/GameScreen/Screen/GameScreenPreview/GameScreenPreview';
+import { ListGames } from 'pages/GameScreen/Screen/ListGames/ListGames';
+import Home from 'pages/GameSettings/Screen/Home';
 import NotFoundPage from 'pages/NotFoundPage';
 import RouteObject from 'types/interfaces/RouteObject';
 
 const RoutesConfig: RouteObject[] = [
   {
-    path: RouteIdEnum.Game,
-    element: <GameSettings />,
+    path: RouteIdEnum.Root,
+    element: <Home />,
   },
   {
     path: RouteIdEnum.Any,
     element: <NotFoundPage />,
+  },
+  {
+    path: RouteIdEnum.GameScreenPreview,
+    element: (
+      <MainLayout>
+        <GameScreenPreview />
+      </MainLayout>
+    ),
+  },
+  {
+    path: RouteIdEnum.GameScreen,
+    element: (
+      <MainLayout>
+        <GameScreen />
+      </MainLayout>
+    ),
+  },
+  {
+    path: RouteIdEnum.ListGames,
+    element: (
+      <MainLayout>
+        <ListGames />
+      </MainLayout>
+    ),
   },
 ];
 export default RoutesConfig;

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { useAppSelector } from 'redux/hooks';
-import { Game, Player } from 'types/interfaces/game';
+import { GameFbResponse, Player } from 'types/interfaces/game';
 import { GamePlayerNumberEnum, GamePlayerNumberToWinEnum, GameTypeEnum } from 'utils/enum';
+import useFirebaseActions from './useFirebaseActions';
 
 interface useGameActionsProps {
   getWinnersPlayers: (players: Player[]) => Player[] | undefined;
@@ -10,32 +10,29 @@ interface useGameActionsProps {
   checkIfGameIsOver: () => boolean;
   winnerPlayers: Player[] | undefined;
   setWinnerPlayers: React.Dispatch<React.SetStateAction<Player[] | undefined>>;
-  game: Game;
-  setGame: React.Dispatch<React.SetStateAction<Game>>;
+  // game: GameFbResponse;
+  // setGame: React.Dispatch<React.SetStateAction<GameFbResponse>>;
   ifPlayerOnLostPlayers: (player: Player) => boolean;
   ifPlayerOnWinnersPlayers: (player: Player) => boolean;
   isGameOverRef: React.MutableRefObject<boolean | undefined>;
   resetGame: () => void;
 }
 
-const useGameActions = (): useGameActionsProps => {
-  const gameDetails = useAppSelector((state) => state.game);
+const useGameActions = (
+  game: GameFbResponse,
+  setGame: React.Dispatch<React.SetStateAction<GameFbResponse>>,
+): useGameActionsProps => {
   const [winnerPlayers, setWinnerPlayers] = useState<Player[] | undefined>([]);
   const [lostPlayers, setLostPlayers] = useState<Player[] | undefined>([]);
-
+  const { finishGameOnFb } = useFirebaseActions();
   const isGameOverRef = useRef<boolean | undefined>(undefined);
-  const [game, setGame] = useState<Game>({
-    gameType: gameDetails.gameType,
-    playersNumber: gameDetails.playersNumber,
-    finalScore: gameDetails.finalScore ?? 0,
-    players: gameDetails.players,
-    rounds: [],
-    team: gameDetails.team,
-  });
 
+  // const [game, setGame] = useState<GameFbResponse>(gameDetails);
   useEffect(() => {
-    setWinnerPlayers(getWinnersPlayers(game.players));
-  }, [game.rounds.length]);
+    if (game && game.rounds && game.rounds.length > 0) {
+      setWinnerPlayers(getWinnersPlayers(game.players));
+    }
+  }, [game?.rounds?.length, game]);
 
   const getWinnersPlayers = (players: Player[]): Player[] => {
     if (game.finalScore) {
@@ -104,6 +101,9 @@ const useGameActions = (): useGameActionsProps => {
   const checkIfGameIsOver = (): boolean => {
     if (winnerPlayers && game.gameType === GameTypeEnum.CHKOBBA) {
       isGameOverRef.current = winnerPlayers.length >= numberOfPlayerToWin();
+      if (winnerPlayers.length >= numberOfPlayerToWin()) {
+        finishGameOnFb(game.key);
+      }
       return winnerPlayers.length >= numberOfPlayerToWin();
     } else {
       if (
@@ -113,6 +113,9 @@ const useGameActions = (): useGameActionsProps => {
         lostPlayers.length >= winnerPlayers.length
       ) {
         isGameOverRef.current = lostPlayers.length > game.playersNumber % 2;
+        if (lostPlayers.length > game.playersNumber % 2) {
+          finishGameOnFb(game.key);
+        }
         return lostPlayers.length > game.playersNumber % 2;
       }
     }
@@ -132,6 +135,10 @@ const useGameActions = (): useGameActionsProps => {
       })),
       rounds: [],
       team: game.team,
+      createdBy: game.createdBy,
+      gameId: game.gameId,
+      key: game.key,
+      isGameOver: false,
     });
     setWinnerPlayers([]);
     setLostPlayers([]);
@@ -143,8 +150,8 @@ const useGameActions = (): useGameActionsProps => {
     checkIfGameIsOver,
     winnerPlayers,
     setWinnerPlayers,
-    game,
-    setGame,
+    // game,
+    // setGame,
     ifPlayerOnLostPlayers,
     ifPlayerOnWinnersPlayers,
     isGameOverRef,

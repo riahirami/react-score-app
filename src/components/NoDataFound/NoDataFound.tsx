@@ -1,10 +1,9 @@
-import { useTranslation } from 'react-i18next';
+import { translate } from 'locales/i18n';
 
 const NoDataFound = () => {
-  const { t } = useTranslation();
   return (
     <div style={{ padding: '5rem' }}>
-      <h1>{t('pokemon.no_data_found_message')}</h1>
+      <h1>{translate('pokemon.no_data_found_message')}</h1>
     </div>
   );
 };

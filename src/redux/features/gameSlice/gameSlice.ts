@@ -1,11 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { GameTypeEnum } from '../../../utils/enum';
+import { Player } from 'types/interfaces/game';
 
-interface Player {
-  playerIndex: number;
-  name: string;
-  score: number;
-}
 interface GameState {
   players: Player[];
   playersNumber: number;
@@ -14,6 +10,8 @@ interface GameState {
   isGameOver: boolean;
   isGameStarted?: boolean;
   team?: boolean;
+  createdBy?: string;
+  gameCode?: string;
 }
 
 const initialState: GameState = {
@@ -23,6 +21,8 @@ const initialState: GameState = {
   isGameOver: false,
   isGameStarted: false,
   team: false,
+  createdBy: '',
+  gameCode: '',
 };
 
 export const gameSlice = createSlice({
@@ -43,8 +43,8 @@ export const gameSlice = createSlice({
     setFinalScore: (state, action: PayloadAction<number>) => {
       state.finalScore = action.payload;
     },
-    setGameStarted: (state) => {
-      state.isGameStarted = true;
+    setGameStarted: (state, action: PayloadAction<boolean>) => {
+      state.isGameStarted = action.payload;
     },
     setPlayers: (state, action: PayloadAction<string[]>) => {
       state.players = action.payload.map((playerName) => ({
@@ -55,6 +55,12 @@ export const gameSlice = createSlice({
     },
     toggleGameTeamMode: (state, action: PayloadAction<boolean>) => {
       state.team = action.payload;
+    },
+    setGameCreatedBy: (state, action: PayloadAction<string>) => {
+      state.createdBy = action.payload;
+    },
+    setGameCode: (state, action: PayloadAction<string>) => {
+      state.gameCode = action.payload;
     },
   },
 });
@@ -67,6 +73,8 @@ export const {
   setPlayersNumber,
   setGameStarted,
   toggleGameTeamMode,
+  setGameCreatedBy,
+  setGameCode,
 } = gameSlice.actions;
 
 export const selectGame = (state: { game: GameState }) => state.game;

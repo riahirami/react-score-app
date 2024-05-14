@@ -14,3 +14,6 @@ export const GAME_TYPE_RADIO_OPTIONS = [
 ];
 
 export const GAME_NUMBER_OF_DEFAULT_PLAYER = '2';
+
+export const CONFIRM_STRING = 'Confirm';
+export const CANCEL_STRING = 'Cancel';

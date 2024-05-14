@@ -1,13 +1,13 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import { Grid, Typography } from '@mui/material';
+import { Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
-import { Game } from 'types/interfaces/game';
+import { Game, GameFbResponse } from 'types/interfaces/game';
 import { StyledPlayerNameContainer } from './PlayersNameRow.style';
 import CustomColumnGrid from 'components/CustomColumnGrid/CustomColumnGrid';
 import useDesignDirection from 'hooks/useDesignDirection';
 
 interface PlayersNameRowProps {
-  game: Game;
+  game: Game | GameFbResponse;
 }
 const PlayersNameRow = ({ game }: PlayersNameRowProps) => {
   const { direction } = useDesignDirection();
@@ -16,14 +16,15 @@ const PlayersNameRow = ({ game }: PlayersNameRowProps) => {
       <Grid container>
         <CustomColumnGrid />
         {game.players.map((player, index) => (
-          <CustomColumnGrid key={index} isMiddleGrid>
+          <CustomColumnGrid key={index} isMiddleGrid game={game}>
             <Typography variant="h6" textAlign={'center'}>
-              {player.name}
+              {player?.name ?? player}
             </Typography>
           </CustomColumnGrid>
         ))}
         <CustomColumnGrid />
       </Grid>
+      <Divider />
     </StyledPlayerNameContainer>
   );
 };

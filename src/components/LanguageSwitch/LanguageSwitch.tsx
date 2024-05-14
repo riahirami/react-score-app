@@ -1,17 +1,16 @@
-import React from 'react';
-import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
 import { LanguagesList } from 'config/constant/language.config';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
+import { translate } from 'locales/i18n';
 
 interface LanguageSwitchProps {
   onChangeLanguageAction: (event: React.ChangeEvent<{ value: unknown }>) => void;
   currentLanguage: string;
 }
 const LanguageSwitch = ({ onChangeLanguageAction, currentLanguage }: LanguageSwitchProps) => {
-  const { t } = useTranslation();
   return (
     <FormControl sx={{ m: 1 }}>
-      <InputLabel id="demo-simple-select-label">{t('Language')}</InputLabel>
+      <InputLabel id="demo-simple-select-label">{translate('Language')}</InputLabel>
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
@@ -26,11 +25,11 @@ const LanguageSwitch = ({ onChangeLanguageAction, currentLanguage }: LanguageSwi
             value={language.short}
             sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center' }}
           >
-            <Typography>
+            <Grid>
               {/* {language.text} */}
 
               <img src={language.icon} width={28} height={20} />
-            </Typography>
+            </Grid>
           </MenuItem>
         ))}
       </Select>

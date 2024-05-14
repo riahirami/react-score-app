@@ -21,6 +21,9 @@ export const fr = {
     Quit: 'Quitter',
     Replay: 'Rejouer',
     New_Game: 'Nouvelle Partie',
+    Join_Game: 'Suivre une partie',
+    Resume_Game: 'Reprendre la partie',
+    Code: 'Code de la partie',
   },
   GameTypeEnum: {
     Rami: 'Rami',
@@ -33,12 +36,32 @@ export const fr = {
       No: 'Non',
       Cancel: 'Annuler',
       Confirm: 'Confirmer',
+      Ok: 'Ok',
     },
     Exit: {
       title: 'Quitter la partie',
       content: 'Vous êtes sur le point de quitter le jeu, êtes-vous sûr ?',
+      resumeGameNote: 'Vous pouvez reprendre la partie plus tard en utilisant le ce code :',
+    },
+    Share_Code: {
+      title: 'Code de la partie',
+      Description: "Partagez le code du jeu avec vos amis pour qu'ils puissent suivre la partie !",
+    },
+    Game_Over: {
+      title: 'La partie est terminée',
+      content: 'La partie est déja terminée, vous pouvez pas la rejoindre !',
+    },
+    Resume_Game: {
+      title: 'Reprendre la partie',
+      content: 'Vous avez un code de partie, voulez-vous le continuer ?',
+    },
+    Unauthorized: {
+      title: 'Non autorisé',
+      content: "Vous n'êtes pas autorisé à accéder à cette partie !",
     },
   },
+  No_data_to_display: 'Pas de données à afficher pour le moment !',
+  Preview_Mode: 'Prévisualisation',
   Language: 'Langue',
   refetch: 'Refetch',
   fetching: 'Fetching',

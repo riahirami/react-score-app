@@ -1,18 +1,9 @@
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import { FormHelperText, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import CustomColumnGrid from 'components/CustomColumnGrid/CustomColumnGrid';
 import React from 'react';
-import {
-  Controller,
-  FieldErrors,
-  FieldValues,
-  UseFormRegister,
-  useFormContext,
-  FormProvider,
-  SubmitHandler,
-  Form,
-} from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Game, Player } from 'types/interfaces/game';
 import {
   StyledCustomButton,
@@ -23,8 +14,6 @@ import {
   StyledTextFieldContainer,
 } from './roundRow.style';
 import { colors } from 'utils/colors';
-import { isPositiveNumber, isScore } from 'utils/validators/input.validators';
-import CustomAlertPopover from 'components/CustomAlertPopover/CustomAlertPopover';
 import useDesignDirection from 'hooks/useDesignDirection';
 interface RoundRowProps {
   roundNumber: number;
@@ -54,7 +43,7 @@ const RoundRow = ({
 }: RoundRowProps) => {
   const addRowButtonWidth = isButtonRemoveDisabled ? 23 : 20;
   const addButtonIconColor =
-    !isValid || game.rounds.length >= roundNumber ? colors.GREY : colors.WHITE;
+    !isValid || game?.rounds?.length >= roundNumber ? colors.GREY : colors.WHITE;
 
   const { control } = useFormContext();
   const { direction } = useDesignDirection();
@@ -65,8 +54,8 @@ const RoundRow = ({
         <CustomColumnGrid>
           <h3>{roundNumber}</h3>
         </CustomColumnGrid>
-        {game.players.map((player, index) => (
-          <CustomColumnGrid key={`${player.name}round${roundNumber}`} isMiddleGrid>
+        {game?.players.map((player) => (
+          <CustomColumnGrid key={`${player.name}round${roundNumber}`} isMiddleGrid game={game}>
             <StyledTextFieldContainer>
               <Controller
                 render={({ field, fieldState }) => (
@@ -80,6 +69,7 @@ const RoundRow = ({
                       value={field.value}
                       type="text"
                       label="score"
+                      dir={direction}
                     />
                     {/* <FormHelperText>
                       <CustomAlertPopover

@@ -8,7 +8,6 @@ export const StyledGameContainer = styled(Grid)(() => ({
 }));
 
 export const StyledGameScreenContainer = styled(Grid)(({ theme }) => ({
-  // display: 'grid',
   justifyContent: 'center',
   backgroundColor:
     theme.palette.mode === ThemeEnum.LIGHT
@@ -44,7 +43,8 @@ export const StyledCustomButton = styled(Button)(({ theme, disabled }) => ({
   },
 }));
 
-export const StyledThemeSwitchContainer = styled(Grid)(() => ({
+export const StyledGameScreenHeader = styled(Grid)(() => ({
+  padding: 10,
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',

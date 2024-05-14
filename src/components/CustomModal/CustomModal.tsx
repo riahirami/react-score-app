@@ -1,6 +1,5 @@
-import { Dialog, DialogTitle } from '@mui/material';
+import { DialogTitle, Slide, Zoom } from '@mui/material';
 import Button from '@mui/material/Button';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Divider from '@mui/material/Divider';
@@ -9,6 +8,9 @@ import React from 'react';
 import { closeModal } from 'redux/features/modalSlice/modalSlice';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { CustomModalStyle, StyledExitModalButtonContainer } from './CustomModal.style';
+import { TransitionProps } from '@mui/material/transitions';
+import { translate } from 'locales/i18n';
+import CustomTransition from 'components/CustomTransition/CustomTransition';
 
 interface CustomModalProps {
   children: React.ReactNode;
@@ -17,6 +19,8 @@ interface CustomModalProps {
   confirmAction?: () => void;
   cancelText?: string;
   confirmText?: string;
+  hasCancelButton?: boolean;
+  hasConfirmButton?: boolean;
 }
 
 const CustomModal = ({
@@ -24,8 +28,10 @@ const CustomModal = ({
   title,
   confirmAction,
   isConfirmButtonDisabled,
-  cancelText = 'Annuler',
-  confirmText = 'Confirmer',
+  cancelText,
+  confirmText,
+  hasCancelButton = true,
+  hasConfirmButton = true,
 }: CustomModalProps) => {
   const isModalOpen = useAppSelector((state) => state.modal.isOpen);
   const dispatch = useAppDispatch();
@@ -48,6 +54,7 @@ const CustomModal = ({
       onClose={handleClose}
       fullWidth
       customDirection={direction}
+      TransitionComponent={CustomTransition}
     >
       <DialogTitle>{title}</DialogTitle>
       <Divider />
@@ -56,22 +63,26 @@ const CustomModal = ({
       </DialogContent>
       <Divider />
       <StyledExitModalButtonContainer>
-        <Button
-          onClick={handleClose}
-          variant="contained"
-          color={'error'}
-          sx={{ textTransform: 'capitalize' }}
-        >
-          {cancelText}
-        </Button>
-        <Button
-          onClick={handleConfirm}
-          variant="contained"
-          disabled={isConfirmButtonDisabled}
-          sx={{ textTransform: 'capitalize' }}
-        >
-          {confirmText}
-        </Button>
+        {hasCancelButton && (
+          <Button
+            onClick={handleClose}
+            variant="contained"
+            color={'error'}
+            sx={{ textTransform: 'capitalize' }}
+          >
+            {cancelText ?? translate('Modal.Common.Cancel')}
+          </Button>
+        )}
+        {hasConfirmButton && (
+          <Button
+            onClick={handleConfirm}
+            variant="contained"
+            disabled={isConfirmButtonDisabled}
+            sx={{ textTransform: 'capitalize' }}
+          >
+            {confirmText ?? translate('Modal.Common.Confirm')}
+          </Button>
+        )}
       </StyledExitModalButtonContainer>
     </CustomModalStyle>
   );

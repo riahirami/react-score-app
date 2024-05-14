@@ -9,6 +9,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import CustomModal from 'components/CustomModal/CustomModal';
+import useFirebaseActions from 'hooks/useFirebaseActions';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
@@ -19,22 +21,23 @@ import {
   setPlayersNumber,
   toggleGameTeamMode,
 } from 'redux/features/gameSlice/gameSlice';
-import { StyledForm, StyledFormInnerContainer } from './gameSettingsModal.styles';
+import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { GameAttributes } from 'types/models/Game/Games';
-import { useAppDispatch } from 'redux/hooks';
-import CustomModal from 'components/CustomModal/CustomModal';
-import { GamePlayerNumberEnum, GameTypeEnum } from 'utils/enum';
-import PlayersNameInput from '../PlayersNameInput/PlayersNameInput';
-import RadioGroupWithLabels from '../RadioGroupWithLabels/RadioGroupWithLabels';
 import {
   GAME_NUMBER_OF_DEFAULT_PLAYER,
   GAME_TYPE_RADIO_OPTIONS,
   PLAYERS_NUMBER_RADIO_OPTIONS,
 } from 'utils/constants';
-import { useTranslation } from 'react-i18next';
+import { GamePlayerNumberEnum, GameTypeEnum } from 'utils/enum';
+import PlayersNameInput from '../PlayersNameInput/PlayersNameInput';
+import RadioGroupWithLabels from '../RadioGroupWithLabels/RadioGroupWithLabels';
+import { StyledForm, StyledFormInnerContainer } from './gameSettingsModal.styles';
+import { translate } from 'locales/i18n';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const GameSettingsModal = () => {
-  const { t } = useTranslation();
+  const { createGameOnFb } = useFirebaseActions();
+  const isGameStarted = useAppSelector((state) => state.game.isGameStarted);
   const [playersNumberValue, setPlayersNumberValue] = useState(
     Number(GAME_NUMBER_OF_DEFAULT_PLAYER),
   );
@@ -60,20 +63,24 @@ const GameSettingsModal = () => {
   const dispatch = useAppDispatch();
 
   const createGameAction = (data: GameAttributes) => {
+    createGameOnFb(data);
+
+    const playersNumber = isTeamModeActivated ? data.playersNumber / 2 : data.playersNumber;
     dispatch(setGameType(data.gameType));
     if (data.team) {
       dispatch(toggleGameTeamMode(data.team));
     }
-    dispatch(setGameStarted());
+    dispatch(setGameStarted(true));
     if (data.playersName) {
       dispatch(setPlayers(data.playersName.filter((item) => item.length > 0)));
-      isTeamModeActivated
-        ? dispatch(setPlayersNumber(data.playersNumber / 2))
-        : dispatch(setPlayersNumber(data.playersNumber));
+      dispatch(setPlayersNumber(playersNumber));
     }
     if (data.finalScore) {
       dispatch(setFinalScore(data.finalScore));
     }
+    // if (gameId) {
+    //   dispatch(setGameCreatedBy(gameId));
+    // }
   };
 
   const handlePlayersNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,6 +88,9 @@ const GameSettingsModal = () => {
       setIsTeamModeActivated(false);
     }
     setPlayersNumberValue(parseInt(event.target.value));
+    for (let i = parseInt(event.target.value); i <= GamePlayerNumberEnum.FOUR; i++) {
+      unregister(`playersName.${i}`);
+    }
   };
 
   const handleTeamModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,15 +102,15 @@ const GameSettingsModal = () => {
     }
   };
 
-  return (
+  return !isGameStarted ? (
     <CustomModal
-      title={t('Game_Actions.New_Game')}
+      title={translate('Game_Actions.New_Game')}
       confirmAction={handleSubmit((data) => {
         createGameAction(data);
       })}
       isConfirmButtonDisabled={!isValid}
-      cancelText={t('Modal.Common.Cancel')}
-      confirmText={t('Modal.Common.Confirm')}
+      cancelText={translate('Modal.Common.Cancel')}
+      confirmText={translate('Modal.Common.Confirm')}
     >
       <StyledForm>
         <FormControl>
@@ -114,13 +124,13 @@ const GameSettingsModal = () => {
                 onChange={(value) => {
                   handlePlayersNumberChange(value);
                 }}
-                label={t('Game_Settings.Player_number')}
+                label={translate('Game_Settings.Player_number')}
               />
 
               {playersNumberValue === GamePlayerNumberEnum.FOUR && (
                 <FormGroup id="handleTeamModeChange">
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography>{t('Game_Settings.Game_Mode.Single')}</Typography>
+                    <Typography>{translate('Game_Settings.Game_Mode.Single')}</Typography>
 
                     <FormControlLabel
                       {...register('team')}
@@ -133,7 +143,7 @@ const GameSettingsModal = () => {
                       }
                       label=""
                     />
-                    <Typography>{t('Game_Settings.Game_Mode.Team')}</Typography>
+                    <Typography>{translate('Game_Settings.Game_Mode.Team')}</Typography>
                   </Stack>
                 </FormGroup>
               )}
@@ -142,10 +152,10 @@ const GameSettingsModal = () => {
                 name="gameType"
                 register={register}
                 defaultValue={GameTypeEnum.RAMI}
-                label={t('Game_Settings.Game_type')}
+                label={translate('Game_Settings.Game_type')}
               />
               <FormLabel id="game-type-radio-buttons-group-label">
-                {t('Game_Settings.Final_score')}
+                {translate('Game_Settings.Final_score')}
               </FormLabel>
               <TextField
                 id="final-score"
@@ -177,6 +187,8 @@ const GameSettingsModal = () => {
         </FormControl>
       </StyledForm>
     </CustomModal>
+  ) : (
+    <></>
   );
 };
 export default GameSettingsModal;

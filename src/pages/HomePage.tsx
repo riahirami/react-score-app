@@ -1,10 +1,9 @@
-import { Button, Container, Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { translate } from 'locales/i18n';
 
 function Homepage() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -18,7 +17,7 @@ function Homepage() {
         padding: '10em',
       }}
     >
-      <Typography variant="h2">{t('common.app_name')}</Typography>
+      <Typography variant="h2">{translate('common.app_name')}</Typography>
     </Container>
   );
 }

@@ -4,17 +4,19 @@ import gameSlice from './features/gameSlice/gameSlice';
 import globalSlice from './features/globalSlice/globalSlice';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import loaderSlice from './features/loader/loaderSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['game', 'modal', 'global'],
+  whitelist: ['game', 'modal', 'global', 'loader'],
 };
 
 const rootReducer = combineReducers({
   modal: modalSlice.reducer,
   game: gameSlice.reducer,
   global: globalSlice.reducer,
+  loader: loaderSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

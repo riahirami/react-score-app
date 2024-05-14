@@ -1,9 +1,11 @@
 export const colors = {
   RED: '#c50213',
   LIGHT_BLUE: '#457b9d',
+  SECONDARY_LIGHT_BLUE: '#96d0f4',
   DARK_BLUE: '#1d3557',
   WHITE: '#FFFFFF',
   WHITE_GREY: '#e6e6e6',
+  SECONDARY_WHITE_GREY: '#ecf4fbff',
   BLACK: '#000000',
   GREY: '#7f7e7e',
 };
