@@ -62,7 +62,7 @@ export const ColorsConfig = {
 
 export const DarkColorsConfig = {
   primary: {
-    main: '#755BE4',
+    main: '#2E5AAC',
   },
   secondary: {
     main: '#FFFFFF',

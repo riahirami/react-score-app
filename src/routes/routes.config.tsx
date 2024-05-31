@@ -2,6 +2,7 @@ import { RouteIdEnum } from 'config/enums';
 import MainLayout from 'layouts/mainLayout/MainLayout';
 import GameScreen from 'pages/GameScreen/Screen/GameScreen/GameScreen';
 import GameScreenPreview from 'pages/GameScreen/Screen/GameScreenPreview/GameScreenPreview';
+import JoinGame from 'pages/GameScreen/Screen/JoinGame/JoinGame';
 import { ListGames } from 'pages/GameScreen/Screen/ListGames/ListGames';
 import Home from 'pages/GameSettings/Screen/Home';
 import NotFoundPage from 'pages/NotFoundPage';
@@ -37,6 +38,14 @@ const RoutesConfig: RouteObject[] = [
     element: (
       <MainLayout>
         <ListGames />
+      </MainLayout>
+    ),
+  },
+  {
+    path: RouteIdEnum.JoinGame,
+    element: (
+      <MainLayout>
+        <JoinGame />
       </MainLayout>
     ),
   },

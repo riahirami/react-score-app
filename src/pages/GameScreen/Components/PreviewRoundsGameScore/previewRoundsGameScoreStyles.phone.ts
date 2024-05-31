@@ -2,6 +2,17 @@ import { Grid, Typography, styled } from '@mui/material';
 import { DirectionType } from 'types/interfaces/global';
 import { colors } from 'utils/colors';
 
+interface StyledRoundsScoreContainerProps {
+  customDirection: DirectionType;
+}
+export const StyledGameRoundsGlobalContainer = styled(Grid)<StyledRoundsScoreContainerProps>(
+  ({ customDirection }) => ({
+    alignSelf: 'center',
+    marginTop: 12,
+    marginBottom: 100,
+    direction: customDirection,
+  }),
+);
 interface StyledRoundContainerProps {
   index: number;
 }
@@ -18,14 +29,3 @@ export const StyledNoDataText = styled(Typography)(() => ({
   textAlign: 'center',
   marginTop: 50,
 }));
-interface StyledRoundsScoreContainerProps {
-  customDirection: DirectionType;
-}
-export const StyledGameRoundsGlobalContainer = styled(Grid)<StyledRoundsScoreContainerProps>(
-  ({ customDirection }) => ({
-    alignSelf: 'center',
-    marginTop: 12,
-    marginBottom: 100,
-    direction: customDirection,
-  }),
-);

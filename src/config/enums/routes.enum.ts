@@ -6,4 +6,5 @@ export enum RouteIdEnum {
   GameScreenPreview = 'preview',
   GameScreen = '/game-screen',
   ListGames = '/list-games',
+  JoinGame = '/join-game/:gameCode',
 }

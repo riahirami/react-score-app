@@ -1,56 +1,47 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import ScreenHeader from 'components/ScreenHeader/ScreenHeader';
 import { RouteIdEnum } from 'config/enums/routes.enum';
 import { ref as dbRef, get } from 'firebase/database';
 import useLanguageChange from 'hooks/useLanguageChange';
 import useThemeModeSwitch from 'hooks/useThemeModeSwitch';
 import MainLayout from 'layouts/mainLayout/MainLayout';
-import { ReactNode, useEffect } from 'react';
-import { FieldValues, FormProvider, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { FieldValues, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { openModal, setModal } from 'redux/features/modalSlice/modalSlice';
 import { useAppDispatch } from 'redux/hooks';
 import { GameFbResponse } from 'types/interfaces/game';
 import { GameAttributes } from 'types/models/Game/Games';
-import { ThemeEnum } from 'utils/enum';
+import { ModalTypeEnum, ThemeEnum } from 'utils/enum';
 import { getPersistData, persistData } from 'utils/helpers/storage.helpers';
-import CustomModalContent from '../Components/CustomModalContent/CustomModalContent';
-import GameOverModal from '../Components/GameOverModal/GameOverModal';
-import GameSettingsModal from '../Components/GameSettingsModal/GameSettingsModal';
 import GameStartSection from '../Components/GameStartSection/GameStartSection';
-import { JoinGameModal } from '../Components/JoinGameModal/JoinGameModal';
 import { StyledContainer } from './home.styles';
-import { translate } from 'locales/i18n';
 import { db } from 'config/firebase';
 import { setLoaderInvisible, setLoaderVisible } from 'redux/features/loader/loaderSlice';
+import CustomModal from 'components/CustomModal/CustomModal';
+import useModal from 'hooks/useModal';
+import { env } from 'config/env';
 
 const Home = () => {
   const { reset } = useForm<GameAttributes>();
   const navigate = useNavigate();
   const { handleThemeModeChange } = useThemeModeSwitch();
   const { changeLanguage, currentLanguage } = useLanguageChange();
-
+  const {
+    isModalOpen,
+    modalContent,
+    modalType,
+    handleNewGameAction,
+    handleAuthorizedAction,
+    handleGameOver,
+    handleJoinGameAction,
+    handleResumeGameAction,
+    handleModalTitle,
+  } = useModal();
   const dispatch = useAppDispatch();
   const formMethods = useForm({
     mode: 'onChange',
     shouldFocusError: true,
   });
-
-  const handleModalActions = (
-    modalContent: ReactNode,
-    modalTitle: string,
-    modalConfirmAction: () => void,
-    hasConfirmButton: boolean,
-  ) => {
-    dispatch(
-      setModal({
-        content: modalContent,
-        title: modalTitle,
-        confirmAction: modalConfirmAction,
-        hasConfirmButton: hasConfirmButton,
-      }),
-    );
-    dispatch(openModal());
-  };
 
   const handleNavigateToScreen = (
     gameData: GameFbResponse,
@@ -58,23 +49,19 @@ const Home = () => {
     data?: FieldValues,
   ) => {
     if (gameData.isGameOver) {
-      handleModalActions(<GameOverModal />, translate('Modal.Game_Over.title'), () => {}, false);
+      handleGameOver();
     } else if (gameData.createdBy !== getPersistData('userId', false)) {
-      handleModalActions(
-        <CustomModalContent contentText={translate('Modal.Unauthorized.content')} />,
-        translate('Modal.Unauthorized.title'),
-        () => {},
-        false,
-      );
+      handleAuthorizedAction();
     } else {
       if (destinationRoute === RouteIdEnum.GameScreen) {
         navigate(destinationRoute, {
           state: { game: gameData },
         });
       } else if (destinationRoute === RouteIdEnum.GameScreenPreview && data) {
-        navigate(destinationRoute, {
-          state: { gameCode: data.gameCode },
-        });
+        // navigate(destinationRoute, {
+        //   state: { gameCode: data.gameCode },
+        // });
+        window.location.href = `${env.url}/join-game/${data.gameCode}`;
       }
     }
   };
@@ -108,46 +95,63 @@ const Home = () => {
       }
     });
 
-  const handleNewGameAction = () => {
-    handleModalActions(<GameSettingsModal />, 'Game Settings', () => reset(), true);
-  };
-
-  const handleGameCodeSubmit = handleSubmitGameCode(true);
-  const handlePreviewCodeSubmit = handleSubmitGameCode(false);
-
-  const handleJoinGameAction = () => {
-    handleModalActions(
-      <FormProvider {...formMethods}>
-        <JoinGameModal />
-      </FormProvider>,
-      translate('Game_Actions.Join_Game'),
-      () => handlePreviewCodeSubmit(),
-      true,
-    );
-  };
-
-  const handleResumeGameAction = () => {
-    handleModalActions(
-      <FormProvider {...formMethods}>
-        <JoinGameModal />
-      </FormProvider>,
-      translate('Modal.Resume_Game.title'),
-      () => handleGameCodeSubmit(),
-      true,
-    );
-  };
+  useEffect(() => {
+    persistData('theme', ThemeEnum.LIGHT);
+  }, []);
 
   const handleListGameAction = () => {
     navigate(RouteIdEnum.ListGames);
   };
 
-  useEffect(() => {
-    persistData('theme', ThemeEnum.LIGHT);
-  }, []);
+  const handlePreviewCodeSubmit = handleSubmitGameCode(false);
+  const handleResumeGameSubmit = handleSubmitGameCode(true);
+
+  const handleConfirmModalAction = () => {
+    switch (modalType) {
+      case ModalTypeEnum.JOIN_GAME:
+        handlePreviewCodeSubmit();
+        break;
+      case ModalTypeEnum.RESUME_GAME:
+        handleResumeGameSubmit();
+        break;
+      case ModalTypeEnum.GAME_SETTINGS:
+        if (modalContent && modalContent.confirmAction) {
+          modalContent.confirmAction();
+        }
+        break;
+      default:
+        console.log('default');
+        break;
+    }
+  };
+
+  const handleNewGameSubmit = () => {
+    handleNewGameAction(() => RouteIdEnum.GameScreen);
+  };
+
+  const handleJoinGame = () => {
+    handleJoinGameAction(() => handleSubmitGameCode(false));
+  };
+
+  const handleResumeGame = () => {
+    handleResumeGameAction(() => handleSubmitGameCode(true));
+  };
 
   return (
     <StyledContainer>
       <MainLayout>
+        {isModalOpen && modalType && (
+          <CustomModal
+            title={handleModalTitle()}
+            confirmAction={handleConfirmModalAction}
+            hasConfirmButton={modalContent?.hasConfirmButton}
+            hasCancelButton={modalContent?.hasCancelButton}
+            confirmText={modalContent?.confirmText}
+            cancelText={modalContent?.cancelText}
+            type={modalType}
+            data={formMethods}
+          />
+        )}
         <ScreenHeader
           handleThemeModeChange={handleThemeModeChange}
           changeLanguage={changeLanguage}
@@ -156,9 +160,9 @@ const Home = () => {
           isScreenGame={false}
         />
         <GameStartSection
-          handleNewGameAction={handleNewGameAction}
-          handleJoinGame={handleJoinGameAction}
-          handleResumeGame={handleResumeGameAction}
+          handleNewGameAction={handleNewGameSubmit}
+          handleJoinGame={handleJoinGame}
+          handleResumeGame={handleResumeGame}
           handleListGameAction={handleListGameAction}
         />
       </MainLayout>

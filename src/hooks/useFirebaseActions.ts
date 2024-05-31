@@ -1,21 +1,8 @@
 import { RouteIdEnum } from 'config/enums';
 import { db } from 'config/firebase';
-import {
-  ref as fbRef,
-  get,
-  getDatabase,
-  off,
-  onChildChanged,
-  onValue,
-  push,
-  set,
-  update,
-} from 'firebase/database';
+import { ref as fbRef, get, off, onChildChanged, push, set, update } from 'firebase/database';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setGameCode } from 'redux/features/gameSlice/gameSlice';
-import { setLoaderInvisible, setLoaderVisible } from 'redux/features/loader/loaderSlice';
 import { GameFbResponse, Round } from 'types/interfaces/game';
 import { GameAttributes } from 'types/models/Game/Games';
 import { deviceUniqueID, randomGameCode } from 'utils/helpers/helpers';
@@ -23,22 +10,19 @@ import { getPersistData, persistData } from 'utils/helpers/storage.helpers';
 interface UseFirebaseActionsProps {
   fetchGamesDetails: () => Promise<GameFbResponse[]>;
   fetchGameDetailsById: (gameId: string) => Promise<GameFbResponse>;
-
   createGameOnFb: (data: GameAttributes) => void;
   updateRoundScoresOnFb: (gameId: string, updatedRounds: GameFbResponse) => Promise<void>;
   listenForGameUpdates: (gameId: string | undefined) => () => void;
   deleteRoundFromFb: (gameId: string, roundId: number) => Promise<void>;
   setGameDetails: React.Dispatch<React.SetStateAction<GameFbResponse | undefined>>;
   gameDetails: GameFbResponse | undefined;
-  finishGameOnFb: (gameId: string) => Promise<void>;
+  changeGameStatusOnFb: (gameId: string, status: boolean) => Promise<void>;
   findUserGames: (userId: string) => Promise<GameFbResponse[]>;
 }
 
 const useFirebaseActions = (): UseFirebaseActionsProps => {
   const navigate = useNavigate();
   const [gameDetails, setGameDetails] = useState<GameFbResponse | undefined>(undefined);
-
-  const [gamesList, setGamesList] = useState<GameFbResponse[]>([]);
 
   const fetchGamesDetails = async (): Promise<GameFbResponse[]> => {
     try {
@@ -174,13 +158,13 @@ const useFirebaseActions = (): UseFirebaseActionsProps => {
     }
   };
 
-  const finishGameOnFb = async (gameId: string) => {
+  const changeGameStatusOnFb = async (gameId: string, status: boolean) => {
     const gameRef = fbRef(db, `/games/${gameId}`);
     const gameSnapshot = await get(gameRef);
     if (gameSnapshot.exists()) {
       try {
         await update(gameRef, {
-          isGameOver: true,
+          isGameOver: status,
         });
         console.log('Game finished successfully on Firebase');
       } catch (error) {
@@ -216,7 +200,7 @@ const useFirebaseActions = (): UseFirebaseActionsProps => {
     listenForGameUpdates,
     deleteRoundFromFb,
     setGameDetails,
-    finishGameOnFb,
+    changeGameStatusOnFb,
     findUserGames,
   };
 };

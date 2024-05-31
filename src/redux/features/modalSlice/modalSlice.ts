@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ReactNode } from 'react';
+import { ModalTypeEnum } from 'utils/enum';
 
-interface ModalContent {
-  content: ReactNode | undefined;
+export interface ModalContent {
+  content: ModalTypeEnum;
   title: string;
   confirmAction?: () => void;
   cancelAction?: () => void;
@@ -14,13 +14,13 @@ interface ModalContent {
 }
 export interface ModalState {
   isOpen: boolean;
-  modal?: ModalContent;
+  modal: ModalContent;
 }
 
 const initialState: ModalState = {
   isOpen: false,
   modal: {
-    content: undefined,
+    content: ModalTypeEnum.EMPTY,
     title: '',
     confirmAction: undefined,
     cancelAction: undefined,
@@ -41,7 +41,7 @@ export const modalSlice = createSlice({
     },
     closeModal: (state) => {
       state.isOpen = false;
-      state.modal = undefined;
+      state.modal = initialState.modal;
     },
     setModal: (state, action: PayloadAction<ModalContent | undefined>) => {
       if (action.payload) {

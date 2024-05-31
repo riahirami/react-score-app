@@ -7,12 +7,9 @@ import useFirebaseActions from 'hooks/useFirebaseActions';
 import useGameActions from 'hooks/useGameActions';
 import useLanguageChange from 'hooks/useLanguageChange';
 import useThemeModeSwitch from 'hooks/useThemeModeSwitch';
-import CustomModalContent from 'pages/GameSettings/Components/CustomModalContent/CustomModalContent';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldValues, FormProvider, useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
-import { openModal, setModal } from 'redux/features/modalSlice/modalSlice';
-import { useAppDispatch } from 'redux/hooks';
 import { GameFbResponse, Player, Round } from 'types/interfaces/game';
 import { audio } from 'utils/audio';
 import GameDetails from '../../Components/GameDetailsCard/GameDetails';
@@ -21,17 +18,20 @@ import GameResultRow from '../../Components/GameResultRow/GameResultRow';
 import PlayersNameRow from '../../Components/PlayersNameRow/PlayersNameRow';
 import RoundRow from '../../Components/RoundRow/RoundRow';
 import { StyledGameContainer, StyledGameScreenContainer } from './GameScreen.style';
+import { setGameCode } from 'redux/features/gameSlice/gameSlice';
+import { useAppDispatch } from 'redux/hooks';
+import { setLoaderInvisible, setLoaderVisible } from 'redux/features/loader/loaderSlice';
 
 const GameScreen = () => {
   const { handleThemeModeChange } = useThemeModeSwitch();
   const { changeLanguage, currentLanguage } = useLanguageChange();
   const { state } = useLocation();
-  const { updateRoundScoresOnFb, deleteRoundFromFb, listenForGameUpdates } = useFirebaseActions();
+  const { updateRoundScoresOnFb, deleteRoundFromFb, listenForGameUpdates, fetchGameDetailsById } =
+    useFirebaseActions();
   const [game, setGame] = useState<GameFbResponse>(state.game);
+
   const gameCode = state.game.gameId;
   const gameKey = state.game.key;
-  console.log('game', game);
-  console.log('state', state);
   const {
     getWinnersPlayers,
     checkIfPlayerWin,
@@ -46,7 +46,35 @@ const GameScreen = () => {
     resetRoundsAndPlayersScore();
   };
 
+  const dispatch = useAppDispatch();
+
+  const initiateGame = async (): Promise<boolean> => {
+    dispatch(setLoaderVisible());
+    try {
+      const data = await fetchGameDetailsById(gameCode);
+      setGame(data);
+      return data ? true : false;
+    } catch (error) {
+      setGame(state.game);
+      return false;
+    } finally {
+      dispatch(setLoaderInvisible());
+    }
+  };
+
+  const roundsEndRef = useRef<null | HTMLHRElement>(null);
+  const scrollToBottom = () => {
+    roundsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
   useEffect(() => {
+    const initData = void initiateGame();
+    if (initData) {
+      scrollToBottom();
+    }
+  }, [gameCode]);
+
+  useEffect(() => {
+    dispatch(setGameCode(gameCode));
     const unsubscribe = listenForGameUpdates(gameKey);
     return () => {
       unsubscribe();
@@ -129,7 +157,6 @@ const GameScreen = () => {
       };
 
       setGame(updatedGame);
-
       try {
         // Update round scores on Firebase
         await updateRoundScoresOnFb(game.key, updatedGame);
@@ -148,6 +175,7 @@ const GameScreen = () => {
 
   const handleSubmit = formMethods.handleSubmit((data) => {
     handleAddNewScoreRow(data);
+    scrollToBottom();
   });
 
   const isValid = formMethods.formState.isValid;
@@ -159,7 +187,7 @@ const GameScreen = () => {
       <Grid>
         <FormProvider {...formMethods}>
           <RoundRow
-            key={`field1`}
+            key={`round1`}
             roundNumber={1}
             game={game}
             handleSubmit={handleSubmit}
@@ -174,7 +202,7 @@ const GameScreen = () => {
 
           {game?.rounds?.map((round: Round, index: number) => (
             <RoundRow
-              key={`field${index}`}
+              key={`round${index}`}
               roundNumber={round.roundNumber + 1}
               game={game}
               handleSubmit={handleSubmit}
@@ -220,7 +248,7 @@ const GameScreen = () => {
           <PlayersNameRow game={game} />
 
           <RoundsScore />
-          <Divider />
+          <Divider ref={roundsEndRef} />
           <GameResultRow
             game={game}
             ifPlayerOnWinnersPlayers={ifPlayerOnWinnersPlayers}

@@ -6,6 +6,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "set:env:dev": "node ./scripts/set-env.js --env dev",
+    "set:env:prod": "node ./scripts/set-env.js --env prod",
     "docker:dev": "docker-compose -f docker-compose.dev.yml up",
     "docker:build-prod": "docker-compose -f docker-compose.prod.yml build",
     "docker:start-prod": "docker run -p 80:80 --name react-app app-prod",

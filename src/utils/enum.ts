@@ -17,3 +17,14 @@ export enum ThemeEnum {
   DARK = 'dark',
   LIGHT = 'light',
 }
+
+export enum ModalTypeEnum {
+  GAME_SETTINGS = 'Game Settings',
+  JOIN_GAME = 'Join Game',
+  RESUME_GAME = 'Resume Game',
+  EXIT_GAME = 'Exit Game',
+  UNAUTHORIZED = 'Unauthorized',
+  GAME_OVER = 'Game Over',
+  Game_CODE = 'Game Code',
+  EMPTY = '',
+}

@@ -10,6 +10,8 @@ import {
   StyledImage,
 } from './gameStartSection.styles';
 import { translate } from 'locales/i18n';
+import { env } from 'config/env';
+import { ENV } from 'config/enums/env.enum';
 
 interface GameGameStartSectionProps {
   handleNewGameAction: () => void;
@@ -24,6 +26,8 @@ const GameStartSection = ({
   handleResumeGame,
   handleListGameAction,
 }: GameGameStartSectionProps) => {
+  const isDevEnv = env.name === ENV.DEV;
+
   return (
     <StyledContainer>
       <Grid>
@@ -44,10 +48,12 @@ const GameStartSection = ({
           {translate('Game_Actions.Resume_Game')}
         </StyledButton>
       </StyledButtonContainer>
-      <StyledButton onClick={handleListGameAction} variant="contained">
-        <ExitToAppOutlinedIcon />
-        list games
-      </StyledButton>
+      {isDevEnv && (
+        <StyledButton onClick={handleListGameAction} variant="contained">
+          <ExitToAppOutlinedIcon />
+          list games
+        </StyledButton>
+      )}
     </StyledContainer>
   );
 };

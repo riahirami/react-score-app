@@ -28,7 +28,7 @@ const ScreenHeader = ({
     <>
       <StyledHeaderContainer>
         <DarkLightModeSwitch onChangeAction={handleThemeModeChange} />
-        {gameCode && <ShareGameCode gameCode={gameCode} />}
+        {gameCode && <ShareGameCode />}
 
         <LanguageSwitch onChangeLanguageAction={changeLanguage} currentLanguage={currentLanguage} />
       </StyledHeaderContainer>

@@ -2,7 +2,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import { Grid, Typography } from '@mui/material';
 import CustomColumnGrid from 'components/CustomColumnGrid/CustomColumnGrid';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Game, Player } from 'types/interfaces/game';
 import {
@@ -45,8 +45,26 @@ const RoundRow = ({
   const addButtonIconColor =
     !isValid || game?.rounds?.length >= roundNumber ? colors.GREY : colors.WHITE;
 
-  const { control } = useFormContext();
+  const { control, setValue } = useFormContext();
   const { direction } = useDesignDirection();
+
+  const initiateFieldValues = () => {
+    for (let i = 0; i < game?.players.length; i++) {
+      if (!game.rounds || game.rounds.length === 0) return;
+      if (roundNumber === 1 && game?.rounds[0]?.playersScore[i]?.score) {
+        setValue(`${game?.players[i].name}round${1}`, game?.rounds[0]?.playersScore[i]?.score);
+      } else if (roundNumber > 1 && game?.rounds[roundNumber - 1]?.playersScore[i]?.score) {
+        setValue(
+          `${game?.players[i].name}round${roundNumber}`,
+          game?.rounds[roundNumber - 1]?.playersScore[i]?.score,
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    initiateFieldValues();
+  }, []);
 
   return (
     <StyledRoundsScoreContainer pendingRound={pendingRound} customDirection={direction}>
@@ -55,30 +73,26 @@ const RoundRow = ({
           <h3>{roundNumber}</h3>
         </CustomColumnGrid>
         {game?.players.map((player) => (
-          <CustomColumnGrid key={`${player.name}round${roundNumber}`} isMiddleGrid game={game}>
+          <CustomColumnGrid
+            key={`${player.playerIndex}round${roundNumber}`}
+            isMiddleGrid
+            game={game}
+          >
             <StyledTextFieldContainer>
               <Controller
                 render={({ field, fieldState }) => (
                   <>
                     <StyledTextField
+                      {...field}
                       placeholder="0"
-                      id={`${player.name}round${roundNumber}`}
+                      key={`${player.playerIndex}round${roundNumber}`}
                       size="small"
                       disabled={isTextFieldDisabled}
-                      {...field}
-                      value={field.value}
+                      onChange={field.onChange}
+                      value={field.value ?? ''}
                       type="text"
-                      label="score"
                       dir={direction}
                     />
-                    {/* <FormHelperText>
-                      <CustomAlertPopover
-                        isShow={!!fieldState.error}
-                        text="Veuillez saisir un score positif"
-                        alertType="info"
-                        alertColor="warning"
-                      />
-                    </FormHelperText> */}
                     {fieldState.error && (
                       <StyledErrorContainer>
                         <Typography variant="caption" color="error">
@@ -90,11 +104,12 @@ const RoundRow = ({
                 )}
                 name={`${player.name}round${roundNumber}`}
                 control={control}
-                defaultValue={0}
-                rules={{
-                  required: 'Le score est obligatoire',
-                  pattern: { value: /^[0-9]*$/, message: 'Veuillez saisir un score valide' },
-                }}
+                // rules={{
+                //   required: 'Le score est obligatoire',
+                //   pattern: { value: /^[0-9]+$/, message: 'Veuillez saisir un score valide' },
+                //   validate: (value) =>
+                //     value <= 0 || value > 1000 ? 'Le score doit être entre 0 et 1000' : true,
+                // }}
               />
             </StyledTextFieldContainer>
           </CustomColumnGrid>

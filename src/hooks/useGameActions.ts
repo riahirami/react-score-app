@@ -24,7 +24,7 @@ const useGameActions = (
 ): useGameActionsProps => {
   const [winnerPlayers, setWinnerPlayers] = useState<Player[] | undefined>([]);
   const [lostPlayers, setLostPlayers] = useState<Player[] | undefined>([]);
-  const { finishGameOnFb } = useFirebaseActions();
+  const { changeGameStatusOnFb } = useFirebaseActions();
   const isGameOverRef = useRef<boolean | undefined>(undefined);
 
   // const [game, setGame] = useState<GameFbResponse>(gameDetails);
@@ -102,7 +102,7 @@ const useGameActions = (
     if (winnerPlayers && game.gameType === GameTypeEnum.CHKOBBA) {
       isGameOverRef.current = winnerPlayers.length >= numberOfPlayerToWin();
       if (winnerPlayers.length >= numberOfPlayerToWin()) {
-        finishGameOnFb(game.key);
+        changeGameStatusOnFb(game.key, true);
       }
       return winnerPlayers.length >= numberOfPlayerToWin();
     } else {
@@ -114,7 +114,7 @@ const useGameActions = (
       ) {
         isGameOverRef.current = lostPlayers.length > game.playersNumber % 2;
         if (lostPlayers.length > game.playersNumber % 2) {
-          finishGameOnFb(game.key);
+          changeGameStatusOnFb(game.key, true);
         }
         return lostPlayers.length > game.playersNumber % 2;
       }
@@ -140,6 +140,7 @@ const useGameActions = (
       key: game.key,
       isGameOver: false,
     });
+    changeGameStatusOnFb(game.key, false);
     setWinnerPlayers([]);
     setLostPlayers([]);
   };

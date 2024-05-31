@@ -19,6 +19,8 @@ import {
   StyledRoundContainer,
 } from './gameScreenPreview.style';
 import { translate } from 'locales/i18n';
+import { setLoaderInvisible, setLoaderVisible } from 'redux/features/loader/loaderSlice';
+import useDesignDirection from 'hooks/useDesignDirection';
 
 const GameScreenPreview = () => {
   const { state } = useLocation();
@@ -26,11 +28,13 @@ const GameScreenPreview = () => {
   const { changeLanguage, currentLanguage } = useLanguageChange();
   const { fetchGameDetailsById, listenForGameUpdates, gameDetails, setGameDetails } =
     useFirebaseActions();
-
   const dispatch = useDispatch();
+  const { direction } = useDesignDirection();
 
   const gameCode = state.gameCode;
+
   const getGameDetails = async () => {
+    dispatch(setLoaderVisible());
     try {
       if (gameCode) {
         const details = await fetchGameDetailsById(gameCode);
@@ -38,8 +42,11 @@ const GameScreenPreview = () => {
       }
     } catch (error) {
       console.error('Error fetching game details', error);
+    } finally {
+      dispatch(setLoaderInvisible());
     }
   };
+
   useEffect(() => {
     dispatch(setGameCode(gameCode));
   }, [gameCode]);
@@ -48,7 +55,6 @@ const GameScreenPreview = () => {
     listenForGameUpdates(gameDetails?.key);
     getGameDetails();
   }, [gameCode, JSON.stringify(gameDetails)]);
-  console.log('gameDetails', gameDetails);
   return (
     <Grid>
       {gameDetails && (
@@ -64,7 +70,7 @@ const GameScreenPreview = () => {
 
           <ExitButton />
           <PlayersNameRow game={gameDetails} />
-          <StyledGameRoundsGlobalContainer>
+          <StyledGameRoundsGlobalContainer customDirection={direction}>
             {gameDetails?.rounds ? (
               gameDetails?.rounds.map((round, index) => (
                 <StyledGameRoundContainer container key={round?.roundNumber}>
@@ -90,16 +96,16 @@ const GameScreenPreview = () => {
                 <StyledNoDataText>{translate('No_data_to_display')}</StyledNoDataText>
               </Grid>
             )}
+            <GameResultRow
+              game={gameDetails}
+              ifPlayerOnWinnersPlayers={() => {
+                return false;
+              }}
+              ifPlayerOnLostPlayers={() => {
+                return false;
+              }}
+            />
           </StyledGameRoundsGlobalContainer>
-          <GameResultRow
-            game={gameDetails}
-            ifPlayerOnWinnersPlayers={() => {
-              return false;
-            }}
-            ifPlayerOnLostPlayers={() => {
-              return false;
-            }}
-          />
         </>
       )}
     </Grid>
