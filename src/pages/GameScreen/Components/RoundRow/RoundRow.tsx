@@ -88,7 +88,7 @@ const RoundRow = ({
                       placeholder="0"
                       key={`${player.playerIndex}round${roundNumber}`}
                       size="small"
-                      disabled={isTextFieldDisabled ?? player.score >= game.finalScore}
+                      disabled={isTextFieldDisabled || player.score >= game.finalScore}
                       onChange={field.onChange}
                       value={field.value ?? ''}
                       type="text"

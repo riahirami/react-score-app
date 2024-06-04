@@ -193,7 +193,7 @@ const GameScreen = () => {
   const resetForm = formMethods.reset;
 
   const RoundsScore = () => {
-    const lastRound = game.rounds.length - 1;
+    const lastRound = game?.rounds?.length - 1;
 
     return (
       <Grid>

@@ -1,4 +1,4 @@
 export const env = {
   name: 'prod',
-  url: 'https://scoreapp-eta.vercel.app',
+  url: 'https://scoringapp.vercel.app',
 };

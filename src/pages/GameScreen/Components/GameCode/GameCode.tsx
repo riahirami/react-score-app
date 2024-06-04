@@ -1,17 +1,18 @@
 import { Chip, Grid, Stack, Typography } from '@mui/material';
-import { env } from 'config/env/dev';
 import React from 'react';
 import { colors } from 'utils/colors';
 import QRCode from 'react-qr-code';
 import { StyledDivider } from './gameCode.style';
 import { translate } from 'locales/i18n';
+import { env } from 'config/env';
 
 interface GameCodeProps {
   description: string;
-  gameCode: string | unknown;
+  gameCode: string | undefined;
 }
 const GameCode = ({ description, gameCode }: GameCodeProps) => {
-  const url = env.url + '/join-game/' + gameCode;
+  const url = `${env.url}/join-game/${gameCode}`;
+
   return (
     <Grid container justifyContent={'center'} alignItems={'center'}>
       <Stack justifyContent={'center'} alignItems={'center'}>
@@ -33,7 +34,7 @@ const GameCode = ({ description, gameCode }: GameCodeProps) => {
           <Chip label={translate('Modal.Share_Code.or')} size="small" />
         </StyledDivider>
         <Typography color={colors.BLACK}>{translate('Modal.Share_Code.buQrCode')}</Typography>
-        <QRCode value={url} size={150} />
+        {gameCode && <QRCode value={url} size={150} />}
       </Stack>
     </Grid>
   );
