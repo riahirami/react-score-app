@@ -77,7 +77,6 @@ const CustomModal = ({
         return <></>;
     }
   };
-
   return (
     <CustomModalStyle
       open={isOpen}

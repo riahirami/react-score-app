@@ -45,7 +45,11 @@ export const ar = {
     },
     Share_Code: {
       title: 'كود الطرح',
-      Description: 'أعطي الكود لأصحابك باش يتبعو معاك السكور',
+      Description: 'باش أصحابك يتبعو معاك السكور',
+      byCode: 'بالكود',
+      byLink: 'بالرابط',
+      buQrCode: 'بالكود QR',
+      or: 'أو',
     },
     Game_Over: {
       title: 'الطرح وفا',

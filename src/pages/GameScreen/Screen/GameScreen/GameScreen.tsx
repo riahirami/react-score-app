@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import PlayWinAudio from 'components/PlayWinAudio/PlayWinAudio';
 import ScreenHeader from 'components/ScreenHeader/ScreenHeader';
@@ -47,13 +47,14 @@ const GameScreen = () => {
   };
 
   const dispatch = useAppDispatch();
+  const isFirstRound = game?.rounds?.length >= 1;
 
   const initiateGame = async (): Promise<boolean> => {
     dispatch(setLoaderVisible());
     try {
       const data = await fetchGameDetailsById(gameCode);
       setGame(data);
-      return data ? true : false;
+      return !!data;
     } catch (error) {
       setGame(state.game);
       return false;
@@ -67,10 +68,13 @@ const GameScreen = () => {
     roundsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
   useEffect(() => {
-    const initData = void initiateGame();
-    if (initData) {
-      scrollToBottom();
-    }
+    const fetchData = async () => {
+      const initData = await initiateGame();
+      if (initData) {
+        scrollToBottom();
+      }
+    };
+    fetchData();
   }, [gameCode]);
 
   useEffect(() => {
@@ -139,23 +143,29 @@ const GameScreen = () => {
       const newRound = {
         roundNumber: rounds.length + 1,
         playersScore: game.players.map((player: Player, index: number) => {
+          const scoreStr = data[`${player.name}round${rounds.length + 1}`];
+          const score = parseInt(scoreStr, 10);
+
           return {
             playerIndex: index + 1,
-            score: parseInt(data[`${player.name}round${rounds.length + 1}`]),
+            score: isNaN(score) ? 0 : score,
           };
         }),
       };
 
-      // Update local state
       const updatedGame = {
         ...game,
-        players: game.players.map((player) => ({
-          ...player,
-          score: player.score + parseInt(data[`${player.name}round${rounds.length + 1}`]),
-        })),
-        rounds: [...rounds, newRound], // Add the new round to the rounds array
-      };
+        players: game.players.map((player) => {
+          const scoreStr = data[`${player.name}round${rounds.length + 1}`];
+          const score = parseInt(scoreStr, 10);
 
+          return {
+            ...player,
+            score: player.score + (isNaN(score) ? 0 : score),
+          };
+        }),
+        rounds: [...rounds, newRound],
+      };
       setGame(updatedGame);
       try {
         // Update round scores on Firebase
@@ -164,6 +174,7 @@ const GameScreen = () => {
         console.log('Error updating round scores :', error);
       }
       getWinnersPlayers(game.players);
+      scrollToBottom();
     },
     [game, getWinnersPlayers, isGameOverRef],
   );
@@ -175,7 +186,6 @@ const GameScreen = () => {
 
   const handleSubmit = formMethods.handleSubmit((data) => {
     handleAddNewScoreRow(data);
-    scrollToBottom();
   });
 
   const isValid = formMethods.formState.isValid;
@@ -183,6 +193,8 @@ const GameScreen = () => {
   const resetForm = formMethods.reset;
 
   const RoundsScore = () => {
+    const lastRound = game.rounds.length - 1;
+
     return (
       <Grid>
         <FormProvider {...formMethods}>
@@ -194,29 +206,29 @@ const GameScreen = () => {
             handleRemoveScoreRow={handleRemoveScoreRow}
             isValid={isValid}
             checkIfPlayerWin={checkIfPlayerWin}
-            isTextFieldDisabled={game?.rounds?.length >= 1}
-            isButtonAddDisabled={game?.rounds?.length >= 1}
+            isTextFieldDisabled={isFirstRound}
+            isButtonAddDisabled={isFirstRound}
             isButtonRemoveDisabled={game?.rounds?.length !== 1}
-            pendingRound={1 === game?.rounds?.length + 1}
+            pendingRound={!game?.rounds?.length}
           />
 
           {game?.rounds?.map((round: Round, index: number) => (
             <RoundRow
-              key={`round${index}`}
+              key={`round${round.roundNumber + 1}`}
               roundNumber={round.roundNumber + 1}
               game={game}
               handleSubmit={handleSubmit}
               handleRemoveScoreRow={handleRemoveScoreRow}
               isValid={isValid}
               checkIfPlayerWin={checkIfPlayerWin}
-              isButtonAddDisabled={index !== game.rounds.length - 1 || checkIfGameIsOver()}
+              isButtonAddDisabled={index !== lastRound || checkIfGameIsOver()}
               isTextFieldDisabled={
-                index !== game.rounds.length - 1 || checkIfGameIsOver()
+                index !== lastRound || checkIfGameIsOver()
                 // checkIfPlayerWin(player) ||
                 // ifPlayerOnLostPlayers(player) ||
               }
               isButtonRemoveDisabled={game.rounds.length !== round.roundNumber + 1}
-              pendingRound={index === game.rounds.length - 1 && !checkIfGameIsOver()}
+              pendingRound={index === lastRound && !checkIfGameIsOver()}
             />
           ))}
         </FormProvider>

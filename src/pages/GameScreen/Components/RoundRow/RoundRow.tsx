@@ -1,12 +1,13 @@
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import { Grid, Typography } from '@mui/material';
 import CustomColumnGrid from 'components/CustomColumnGrid/CustomColumnGrid';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Game, Player } from 'types/interfaces/game';
 import {
   StyledCustomButton,
+  StyledDeleteIcon,
+  StyledDoneIcon,
   StyledErrorContainer,
   StyledGridContainer,
   StyledRoundsScoreContainer,
@@ -87,7 +88,7 @@ const RoundRow = ({
                       placeholder="0"
                       key={`${player.playerIndex}round${roundNumber}`}
                       size="small"
-                      disabled={isTextFieldDisabled}
+                      disabled={isTextFieldDisabled ?? player.score >= game.finalScore}
                       onChange={field.onChange}
                       value={field.value ?? ''}
                       type="text"
@@ -117,23 +118,14 @@ const RoundRow = ({
         <CustomColumnGrid>
           <Grid>
             <StyledCustomButton disabled={isButtonAddDisabled} onClick={handleSubmit}>
-              <DoneOutlineIcon
-                sx={{
-                  color: addButtonIconColor,
-                  width: addRowButtonWidth,
-                }}
-              />
+              <StyledDoneIcon iconColor={addButtonIconColor} iconWidth={addRowButtonWidth} />
             </StyledCustomButton>
             {!isButtonRemoveDisabled && (
               <StyledCustomButton
                 onClick={() => handleRemoveScoreRow(roundNumber)}
                 disabled={isButtonRemoveDisabled}
               >
-                <DeleteForeverOutlinedIcon
-                  sx={{
-                    color: colors.WHITE,
-                  }}
-                />
+                <StyledDeleteIcon iconColor={colors.WHITE} />
               </StyledCustomButton>
             )}
           </Grid>

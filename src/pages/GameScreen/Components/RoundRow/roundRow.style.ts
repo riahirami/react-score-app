@@ -2,6 +2,9 @@ import { Grid, TextField, styled } from '@mui/material';
 import { DirectionType } from 'types/interfaces/global';
 import { ThemeEnum } from 'utils/enum';
 import { getButtonBackgroundColor, getPendingRoundColor } from 'utils/helpers/helpers';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+
 interface StyledRoundsScoreContainerProps {
   pendingRound: boolean;
   customDirection: DirectionType;
@@ -51,3 +54,19 @@ export const StyledCustomButton = styled('button')(({ theme, disabled }) => ({
     cursor: disabled ? 'default' : 'pointer',
   },
 }));
+
+interface StyleIconProps {
+  iconColor: string;
+  iconWidth?: number;
+}
+export const StyledDoneIcon = styled(DoneOutlineIcon)<StyleIconProps>(
+  ({ iconColor, iconWidth }) => ({
+    color: iconColor,
+    width: iconWidth,
+  }),
+);
+export const StyledDeleteIcon = styled(DeleteForeverOutlinedIcon)<StyleIconProps>(
+  ({ iconColor }) => ({
+    color: iconColor,
+  }),
+);

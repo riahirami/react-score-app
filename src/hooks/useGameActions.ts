@@ -10,8 +10,7 @@ interface useGameActionsProps {
   checkIfGameIsOver: () => boolean;
   winnerPlayers: Player[] | undefined;
   setWinnerPlayers: React.Dispatch<React.SetStateAction<Player[] | undefined>>;
-  // game: GameFbResponse;
-  // setGame: React.Dispatch<React.SetStateAction<GameFbResponse>>;
+
   ifPlayerOnLostPlayers: (player: Player) => boolean;
   ifPlayerOnWinnersPlayers: (player: Player) => boolean;
   isGameOverRef: React.MutableRefObject<boolean | undefined>;
@@ -27,7 +26,6 @@ const useGameActions = (
   const { changeGameStatusOnFb } = useFirebaseActions();
   const isGameOverRef = useRef<boolean | undefined>(undefined);
 
-  // const [game, setGame] = useState<GameFbResponse>(gameDetails);
   useEffect(() => {
     if (game && game.rounds && game.rounds.length > 0) {
       setWinnerPlayers(getWinnersPlayers(game.players));
@@ -151,8 +149,6 @@ const useGameActions = (
     checkIfGameIsOver,
     winnerPlayers,
     setWinnerPlayers,
-    // game,
-    // setGame,
     ifPlayerOnLostPlayers,
     ifPlayerOnWinnersPlayers,
     isGameOverRef,

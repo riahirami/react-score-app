@@ -45,7 +45,11 @@ export const fr = {
     },
     Share_Code: {
       title: 'Code de la partie',
-      Description: "Partagez le code du jeu avec vos amis pour qu'ils puissent suivre la partie !",
+      Description: "Pour partager le jeu avec vos amis pour qu'ils puissent suivre la partie  ",
+      byCode: 'Partager ce code',
+      byLink: 'Partager ce lien',
+      buQrCode: 'Scanner le QR code',
+      or: 'Ou',
     },
     Game_Over: {
       title: 'La partie est terminée',
