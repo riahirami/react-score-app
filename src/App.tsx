@@ -6,19 +6,20 @@ import { useEffect, useMemo } from 'react';
 import generateTheme from 'theme/theme';
 import { firebaseConfig } from 'config/firebase';
 import { initializeApp } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
+import { Analytics } from '@vercel/analytics/react';
+
 function App() {
   const { themeMode } = useThemeModeSwitch();
   const theme = useMemo(() => generateTheme(themeMode), [themeMode]);
-  const db = getDatabase();
 
   useEffect(() => {
-    const firebaseApp = initializeApp(firebaseConfig);
+    initializeApp(firebaseConfig);
   }, []);
 
   return (
     <ThemeProvider theme={theme}>
       <Router />
+      <Analytics />
     </ThemeProvider>
   );
 }
