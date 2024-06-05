@@ -52,6 +52,7 @@ const GameScreen = () => {
   const initiateGame = async (): Promise<boolean> => {
     dispatch(setLoaderVisible());
     try {
+      dispatch(setGameCode(gameCode));
       const data = await fetchGameDetailsById(gameCode);
       setGame(data);
       return !!data;
@@ -78,7 +79,6 @@ const GameScreen = () => {
   }, [gameCode]);
 
   useEffect(() => {
-    dispatch(setGameCode(gameCode));
     const unsubscribe = listenForGameUpdates(gameKey);
     return () => {
       unsubscribe();

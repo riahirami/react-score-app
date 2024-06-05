@@ -83,7 +83,9 @@ const Home = () => {
                 handleNavigateToScreen(gameData, RouteIdEnum.GameScreenPreview, data);
               }
               return gameData;
-            } else if (gameData.gameId !== data?.gameCode || gameData.gameId !== data.gameCode) {
+            } else if (gameData.key !== data?.gameCode || gameData.gameId !== data?.gameCode) {
+              console.log('gameData ', gameData);
+              console.log('data ', data);
               handleInexistentGame();
             }
           });
