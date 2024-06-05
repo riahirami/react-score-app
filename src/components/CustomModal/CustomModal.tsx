@@ -1,4 +1,4 @@
-import { DialogTitle } from '@mui/material';
+import { DialogTitle, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -70,6 +70,12 @@ const CustomModal = ({
       case ModalTypeEnum.Game_CODE:
         return (
           <GameCode description={translate('Modal.Share_Code.Description')} gameCode={gameCode} />
+        );
+      case ModalTypeEnum.GAME_NOT_FOUND:
+        return (
+          <CustomModalContent
+            contentText={translate('Modal.Game_not_Found.content')}
+          ></CustomModalContent>
         );
       case ModalTypeEnum.GAME_SETTINGS:
         return <GameSettingsModal />;

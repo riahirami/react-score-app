@@ -63,6 +63,10 @@ export const ar = {
       title: 'ما عندكش الصلاحية',
       content: 'ما عندكش الصلاحية باش تدخل هنا',
     },
+    Game_not_Found: {
+      title: ' الطرح ما فماش',
+      content: ' الطرح موش موجود، عاد ثبت في الكود إلي إستعملتو ',
+    },
   },
   Preview_Mode: 'تتفرج',
   Language: 'اللغة',

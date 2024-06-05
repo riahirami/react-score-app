@@ -26,5 +26,6 @@ export enum ModalTypeEnum {
   UNAUTHORIZED = 'Unauthorized',
   GAME_OVER = 'Game Over',
   Game_CODE = 'Game Code',
+  GAME_NOT_FOUND = 'Game Not Found',
   EMPTY = '',
 }

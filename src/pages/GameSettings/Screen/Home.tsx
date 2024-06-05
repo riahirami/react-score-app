@@ -36,6 +36,7 @@ const Home = () => {
     handleJoinGameAction,
     handleResumeGameAction,
     handleModalTitle,
+    handleInexistentGame,
   } = useModal();
   const dispatch = useAppDispatch();
   const formMethods = useForm({
@@ -48,6 +49,7 @@ const Home = () => {
     destinationRoute: RouteIdEnum,
     data?: FieldValues,
   ) => {
+    console.log('data & gameData :', data, gameData);
     if (gameData.isGameOver) {
       handleGameOver();
     } else if (gameData.createdBy !== getPersistData('userId', false)) {
@@ -58,9 +60,6 @@ const Home = () => {
           state: { game: gameData },
         });
       } else if (destinationRoute === RouteIdEnum.GameScreenPreview && data) {
-        // navigate(destinationRoute, {
-        //   state: { gameCode: data.gameCode },
-        // });
         window.location.href = `${env.url}/join-game/${data.gameCode}`;
       }
     }
@@ -76,6 +75,7 @@ const Home = () => {
         if (gameSnapshot.exists()) {
           gameSnapshot.forEach((childSnapshot) => {
             const gameData = childSnapshot.val();
+
             if (gameData.key === data.gameCode || gameData.gameId === data.gameCode) {
               if (isResumeAction) {
                 handleNavigateToScreen(gameData, RouteIdEnum.GameScreen);
@@ -83,6 +83,8 @@ const Home = () => {
                 handleNavigateToScreen(gameData, RouteIdEnum.GameScreenPreview, data);
               }
               return gameData;
+            } else if (gameData.gameId !== data?.gameCode || gameData.gameId !== data.gameCode) {
+              handleInexistentGame();
             }
           });
         } else {

@@ -33,6 +33,7 @@ interface useModalProps {
   handleJoinGameAction: (confirmFunction: (resume: boolean) => void) => void;
   handleResumeGameAction: (confirmFunction: (resume: boolean) => void) => void;
   handleModalTitle: () => string;
+  handleInexistentGame: () => void;
 }
 
 const useModal = (): useModalProps => {
@@ -100,6 +101,16 @@ const useModal = (): useModalProps => {
       cancelText: translate('Modal.Common.Cancel'),
     });
   };
+  const handleInexistentGame = () => {
+    handleModalAction({
+      type: ModalTypeEnum.GAME_NOT_FOUND,
+      title: translate('Modal.Game_not_Found.title'),
+      confirmText: translate('Modal.Common.Ok'),
+      hasConfirmButton: true,
+      hasCancelButton: false,
+      cancelText: translate('Modal.Common.Cancel'),
+    });
+  };
 
   const handleJoinGameAction = (confirmFunction: (resume: boolean) => void) => {
     handleModalAction({
@@ -132,19 +143,21 @@ const useModal = (): useModalProps => {
   const handleModalTitle = () => {
     switch (modalType) {
       case ModalTypeEnum.EXIT_GAME:
-        return 'Exit Game';
+        return translate('Modal.Exit.title');
       case ModalTypeEnum.UNAUTHORIZED:
-        return 'Unauthorized';
+        return translate('Modal.Unauthorized.title');
       case ModalTypeEnum.JOIN_GAME:
-        return 'Join Game';
+        return translate('Game_Actions.Code');
       case ModalTypeEnum.RESUME_GAME:
-        return 'Resume Game';
+        return translate('Modal.Resume_Game.title');
       case ModalTypeEnum.GAME_OVER:
-        return 'Game Over';
+        return translate('Modal.Game_Over.title');
       case ModalTypeEnum.GAME_SETTINGS:
-        return 'Game Settings';
+        return translate('Game_Actions.New_Game');
       case ModalTypeEnum.Game_CODE:
-        return 'Game Code';
+        return translate('New_Game.Join_Game');
+      case ModalTypeEnum.GAME_NOT_FOUND:
+        return translate('Modal.Game_not_Found.title');
       default:
         return '';
     }
@@ -163,6 +176,7 @@ const useModal = (): useModalProps => {
     handleJoinGameAction,
     handleResumeGameAction,
     handleModalTitle,
+    handleInexistentGame,
   };
 };
 

@@ -63,6 +63,10 @@ export const fr = {
       title: 'Non autorisé',
       content: "Vous n'êtes pas autorisé à accéder à cette partie !",
     },
+    Game_not_Found: {
+      title: 'Partie introuvable',
+      content: 'La partie que vous cherchez est introuvable ! Revériifer le code de la partie',
+    },
   },
   No_data_to_display: 'Pas de données à afficher pour le moment !',
   Preview_Mode: 'Prévisualisation',
